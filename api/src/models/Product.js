@@ -2,10 +2,11 @@ const { DataTypes, INTEGER } = require('sequelize')
 module.exports = (sequelize) => {
   
   sequelize.define('product', {
-    id: {
+    idProduct: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       notNull: true,
+      autoIncrement: true
 
     },
     name: {

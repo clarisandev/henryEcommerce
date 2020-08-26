@@ -8,7 +8,7 @@ const {
 
 const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/ttkk`, {
   logging: false, // set to console.log to see the raw SQL queries
-  native: true, // lets Sequelize know we can use pg-native for ~30% more speed
+  native: false, // lets Sequelize know we can use pg-native for ~30% more speed
 });
 const basename = path.basename(__filename);
 
@@ -33,6 +33,24 @@ sequelize.models = Object.fromEntries(capsEntries);
 const { Product, Categories,Inter_Cat_Prod} = sequelize.models;
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
+// Asociacion de Products:
+
+    Product.belongsToMany(Categories, {
+      through : {
+        model: Inter_Cat_Prod
+      },
+      foreignKey: 'idProduct'
+    });
+
+    Categories.belongsToMany(Product,{
+      through: {
+        model: Inter_Cat_Prod
+      },
+      foreignKey: 'idCategory'
+    })
+  
+    
+
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
