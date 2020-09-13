@@ -1,34 +1,43 @@
-const { DataTypes, INTEGER } = require('sequelize')
+const {
+  DataTypes,
+  INTEGER
+} = require('sequelize')
 module.exports = (sequelize) => {
-  
   sequelize.define('product', {
     idProduct: {
       type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
       notNull: true,
+<<<<<<< HEAD
       autoIncrement: true
 
+=======
+>>>>>>> dev_front
     },
     name: {
-      
       type: DataTypes.STRING,
-      notNull: true,
+      allowNull: false,
     },
     description: {
       type: DataTypes.STRING,
-      notNull: true,
+      allowNull: false,
     },
     precio: {
-      type: DataTypes.INTEGER,
-      notNull: true,
+      type: DataTypes.FLOAT,
+      allowNull: false,
     },
     rating: {
       type: DataTypes.INTEGER,
-      notNull: false
+      allowNull: false
     },
-    stock: { 
+    stock: {
       type: DataTypes.INTEGER,
-      notNull: true,
-     }
+      allowNull: false,
+    },
+    images: {
+      type: DataTypes.STRING,
+      allowNull: true
+    }
   });
 };

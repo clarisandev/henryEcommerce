@@ -1,0 +1,30 @@
+.products {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+.ProductCard_Container {
+    display: flex;
+}
+div.productCard.card {
+    background-color: #F5F3BB;
+    border-radius: 10px;
+}
+.category {
+    display: flex;
+}
+
+.categories_menu {
+    display: flex;
+    font-size: 20px;
+    flex-direction: row;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    padding-bottom: 10px;
+    border-style:'none';
+    justify-content: center;
+}
+button{
+    background-color: transparent;
+    border: 0px;
+}
