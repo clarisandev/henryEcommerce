@@ -39,7 +39,8 @@ server.delete('/products/category/:id', (req, res, next) => {
 			idCategorie: req.body.idCategory
 		}
 	}).then(res.send(req.body))
-		.catch(next)
+        .catch(next)
+})
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////// DELETE
