@@ -12,11 +12,11 @@ const Login = (props) => {
   const { modalLoginClose, ChangeModal } = props;
   const [inputs, setInputs] = useState({});
   const idUser = useSelector((store) => store.usersReducer.idUser);
+  const userCheck = useSelector((store) => store.usersReducer.level);
 
   toast.configure()
 
   const handleChancla = () => {
-    console.log('dqwjdqkwldjkqwlwkdqw',inputs)
     if( !inputs.email || !inputs.password ){
       toast.error("Debe completar todos los datos", {
         position: "top-center",
@@ -28,9 +28,13 @@ const Login = (props) => {
         progress: undefined,
     });
     } else {
-      dispatch(actionLogin({ ...inputs, idUser: idUser }));
-      modalLoginClose();
-      dispatch(actionGetOrder(idUser))
+      dispatch(actionLogin({ ...inputs, idUser: idUser }))
+    
+      if(userCheck != 'GUEST'){
+        modalLoginClose();
+        dispatch(actionGetOrder(idUser))
+      }
+
       // setTimeout(() => {
       //   window.location.reload();
       // }, 200);
