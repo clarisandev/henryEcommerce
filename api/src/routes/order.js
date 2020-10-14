@@ -67,7 +67,7 @@ server.get("/:idUser", (req, res, next) => {
 server.get("/history/:idUser", (req, res, next) => {
   Order.findAll({
     where: {
-      idUser: req.params.idUser,
+      idUser: req.user.idUser,
     },
     include: [
       {
@@ -75,8 +75,10 @@ server.get("/history/:idUser", (req, res, next) => {
         as: "products",
       },
     ],
+    order: ['createdAt','DESC']
   })
     .then((orders) => {
+      console.log(orders);
       res.send(orders);
     })
     .catch((error) => {
@@ -90,6 +92,7 @@ server.get("/search", isAdmin, (req, res, next) => {
         [Sequelize.Op.like]: "%" + req.query.query + "%",
       },
     },
+    order: ['createdAt','DESC']
   })
     .then((orders) => {
       res.send(orders);
@@ -105,6 +108,7 @@ server.get("/", (req, res, next) => {
         as: "products",
       },
     ],
+    order: ['createdAt','DESC']
   })
     .then((orders) => {
       res.send(orders);
@@ -142,6 +146,7 @@ server.get("/", (req, res, next) => {
         as: "products",
       },
     ],
+    order: ['createdAt','DESC']
   })
     .then((orders) => {
       res.send(orders);
@@ -155,7 +160,7 @@ server.post("/cerrada", (req, res) => {
     limit: 1,
     where: {
       idUser: req.user.idUser,
-      status: "CERRADA",
+      status: 'CON ENVIO' || 'CON RETIRO',
     },
     order: [["createdAt", "DESC"]],
     include: [
@@ -217,7 +222,6 @@ server.post("/setDireccion", (req, res) => {
 
 server.delete("/deleteDireccion", (req, res) => {
   // req.body --> idOrderUser
-
   Direccion.destroy({
     where: {
       idOrder: req.body.idOrderUser,
@@ -232,9 +236,6 @@ server.delete("/deleteDireccion", (req, res) => {
 server.post("/checkout", async (req, res, next) => {
   // SI REQ.BODY TRAE 'cancelarEnvio' FALSE => NO HAY ENVIO ; TRUE => HAY ENVIO
   const { cancelarEnvio } = req.body;
-
- 
-  
   const allProdUser = await Order.findOne({
     where: {
       idUser: req.user.idUser,
@@ -246,6 +247,7 @@ server.post("/checkout", async (req, res, next) => {
         where: {
           idOrder: order.idOrder,
         },
+        order: ['createdAt','DESC']
       });
     })
     .catch(next);
@@ -284,7 +286,6 @@ server.post("/checkout", async (req, res, next) => {
       });
     }
   });
-    
   //////// -- CREARLE NUEVA ORDEN CREADA
 
   User.findOne({
@@ -338,6 +339,21 @@ server.post("/checkout", async (req, res, next) => {
     });
   }
 );
+
+
+server.put('/cancelOrder', (req, res) => {
+  Order.findOne({
+    where:{
+      idOrder: req.body.idOrder
+    }
+  }).then( order => {
+    order.update({
+      ...order,
+      status: 'CANCELADA'
+    })
+  })
+})
+
 
 /////////////////////////////////DEV
 

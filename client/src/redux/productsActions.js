@@ -70,7 +70,6 @@ export const actionDeleteProduct = (id) => {
 export const actionPostProduct = (product) => {
     return (dispatch) => {
         axios.post(url + 'products/create', product, {withCredentials: true}).then((res) => {
-            console.log('actionPostProductRES:\n',res)
             dispatch({ type: PRODUCT_POST, payload: res.data })
         })
     }

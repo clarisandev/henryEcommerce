@@ -52,7 +52,6 @@ const Cropper = (props) => {
       outputSize
     );
     return new Promise((resolve, reject) => { 
-      console.log(resolve)
       canvas.toBlob(blob => {
         if (!blob) {
           console.error("Canvas is empty");
@@ -68,7 +67,6 @@ const Cropper = (props) => {
   };
   const onImageLoaded = image => {
     debugger;
-    console.log("onImageLoaded", image.width, image.height);
     setImage(image);
     const { width, height } = image;
     const metrics = getDefaultSelection(width, height);

@@ -9,12 +9,9 @@ const Catalogue = () => {
     const dispatch = useDispatch()
     useEffect(() => {
         if (qs.parse(window.location.search).filter) {
-            console.log(qs.parse(window.location.search).filter)
             if (filter !== 'All categories') {
-                console.log("accion :D")
                 dispatch(actionGetProductsByCategory(filter))
             } else {
-                console.log("Else accion :D");
                 dispatch(actionGetProducts())
             }
         }
@@ -27,7 +24,7 @@ const Catalogue = () => {
         return (
             <div>
                 <div className='NotFoundProd'>
-                    <h3><b>No existen productos aun</b></h3>
+                    <h3 className='NotFoundProd'><b>No existen productos aun</b></h3>
                 </div>
             </div>
         )

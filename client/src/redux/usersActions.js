@@ -25,6 +25,7 @@ import {
   PUT_DATA,
   FILE_UPLOAD,
 } from "./constants";
+import { actionGetOrder } from "./ordersActions";
 const url = "http://localhost:3000/";
 var qs = require("qs");
 axios.defaults.withCrendentails = true;
@@ -37,7 +38,7 @@ export const actionUpdateUser = (inputs) => {
   }
 }
 export const actionGetUsers = () => {
-  return (dispatch) => { 
+  return (dispatch) => {
     axios.get(url + "user/", { withCredentials: true }).then((res) => {
         dispatch({ type: GET_ALL_USERS, payload: res.data });
       });
@@ -174,7 +175,6 @@ export const actionUserCreate = (props) => {
 };
 export const actionLogin = (inputs) => {
   return (dispatch) => {
-    console.log("inputsInLogin", inputs);
     var data = qs.stringify(inputs);
     var config = {
       withCredentials: true,
@@ -201,11 +201,14 @@ export const actionLogin = (inputs) => {
               draggable: true,
               progress: undefined,
             });
-            return dispatch({
+            dispatch({
               type: POST_LOGIN,
               payload: res.data.dataValues,
-            });
-          });
+            })
+            return res
+          }).then((res) => {
+            dispatch(actionGetOrder(res.data.dataValues.idUser));
+          });;
       })
       .catch((error) => {
         console.log("errorr");
