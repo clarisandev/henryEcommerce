@@ -74,7 +74,8 @@ server.get("/history/:idUser", (req, res, next) => {
         model: Product,
         as: "products",
       },
-    ]
+    ],
+    order: ['createdAt','DESC']
   })
     .then((orders) => {
       console.log(orders);
@@ -91,6 +92,7 @@ server.get("/search", isAdmin, (req, res, next) => {
         [Sequelize.Op.like]: "%" + req.query.query + "%",
       },
     },
+    order: ['createdAt','DESC']
   })
     .then((orders) => {
       res.send(orders);
@@ -106,6 +108,7 @@ server.get("/", (req, res, next) => {
         as: "products",
       },
     ],
+    order: ['createdAt','DESC']
   })
     .then((orders) => {
       res.send(orders);
@@ -143,6 +146,7 @@ server.get("/", (req, res, next) => {
         as: "products",
       },
     ],
+    order: ['createdAt','DESC']
   })
     .then((orders) => {
       res.send(orders);
@@ -243,6 +247,7 @@ server.post("/checkout", async (req, res, next) => {
         where: {
           idOrder: order.idOrder,
         },
+        order: ['createdAt','DESC']
       });
     })
     .catch(next);
