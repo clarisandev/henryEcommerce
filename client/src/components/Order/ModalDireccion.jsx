@@ -56,7 +56,6 @@ const ModalDireccion = (props) => {
       const directionsUser = useSelector(state => state.usersReducer.direcciones)
 
       const setDirectionsSave = dir => {
-            console.log('DIR', dir)
             const { referencia, provincia, ciudad, calle, numeracion, barrio, piso, depto, CP } = dir;
             setDireccion({
                   ...direccion,

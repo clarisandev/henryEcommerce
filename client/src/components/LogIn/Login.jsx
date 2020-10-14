@@ -18,7 +18,7 @@ const Login = (props) => {
   toast.configure()
 
   const handleChancla = () => {
-    console.log('dqwjdqkwldjkqwlwkdqw', inputs)
+
     if (!inputs.email || !inputs.password) {
       toast.error("Debe completar todos los datos", {
         position: "top-center",

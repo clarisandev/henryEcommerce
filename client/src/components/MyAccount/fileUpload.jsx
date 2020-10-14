@@ -22,44 +22,6 @@ const FileUpload = (props) => {
         const formData = new FormData(); // para enviar inputs del form se envia con 
         formData.append('file',file);
     }
-/* 
-    const img = useSelector(store => store.userReducer.img); */
-/* 
-    const [file,setFile]= useState();
-    const [fileName, setFileName] = useState('ChooseFile');
-    const [uploadedFile, setUploadedFile] = useState({}); //aca esta el objeto que mando del back
-
-
-    const onChange = e => {
-        setFile(e.target.files[0]);
-        setFileName(e.target.files[0].name)
-    };
-
-    const onSubmit = async e =>{
-        e.preventdefault();
-        const formData = new FormData(); // para enviar inputs del form se envia con 
-        formData.append('file',file); //del baack
-
-        try{
-        const res = await axios.post('/:upload', formData ,{
-            header: {
-                'Content-Type':  'multipart/form-data'
-            }
-        });
-        const {fileName,filePath} = res.data;
-        setUploadedFile({fileName,filePath})
-
-        } catch(err) {
-
-            if(err.response.status === 500) {
-                console.log('Hubo un problema con el servidor')
-            } else {
-                console.log(err.response.data.msg)
-            }
-        }
-
-    } */
-
     return(
       
             <Fragment>

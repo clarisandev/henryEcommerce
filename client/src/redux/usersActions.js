@@ -175,7 +175,6 @@ export const actionUserCreate = (props) => {
 };
 export const actionLogin = (inputs) => {
   return (dispatch) => {
-    console.log("inputsInLogin", inputs);
     var data = qs.stringify(inputs);
     var config = {
       withCredentials: true,

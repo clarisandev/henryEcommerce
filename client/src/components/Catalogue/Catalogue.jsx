@@ -9,12 +9,9 @@ const Catalogue = () => {
     const dispatch = useDispatch()
     useEffect(() => {
         if (qs.parse(window.location.search).filter) {
-            console.log(qs.parse(window.location.search).filter)
             if (filter !== 'All categories') {
-                console.log("accion :D")
                 dispatch(actionGetProductsByCategory(filter))
             } else {
-                console.log("Else accion :D");
                 dispatch(actionGetProducts())
             }
         }

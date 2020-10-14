@@ -20,7 +20,6 @@ export const actionGetCategories = () => {
 export const actionPostCategory = (category) => {
   return (dispatch) => {
     axios.post(url + 'category/create', category, { withCredentials: true }).then((res) => {
-      console.log('resdata',res.data);
       dispatch(actionGetCategories())
     }).catch(error => {
       dispatch({ type: POST_CATEGORY_ERROR })

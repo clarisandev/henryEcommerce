@@ -6,14 +6,9 @@ import {
 import './modalInfoOrder.css'
 
 const ModalInfoOrder = (props) => {
-
     const { order, closeViewInfo } = props;
-
-    console.log(order)
-
     return (
-
-        <div className='modalInfoContainer'>                   
+       <div className='modalInfoContainer'>                   
          <button className="closeButtonOrder" onClick={e => closeViewInfo()}>
                         <i class="fas fa-times"></i>
                     </button>

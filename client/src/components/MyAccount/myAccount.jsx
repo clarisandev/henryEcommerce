@@ -64,7 +64,7 @@ const MyAccount = (props) => {
 
     const handleChange = (e) => {
         const { type, value } = e.target;
-        console.log("type: ", type);
+
         if (type === 'text') {
             setInputs({ ...inputs, idUser: user, name: value })
         } else {

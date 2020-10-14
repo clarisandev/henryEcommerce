@@ -8,10 +8,9 @@ axios.defaults.withCrendentails = true;
 ///////////////////////////// Acciones de Direcciones
 
 export const actionDeleteDireccion = (idOrderUser) => {
-    console.log('IDORDEER', idOrderUser)
+
     return (dispatch) => {
         var data = qs.stringify({ idOrderUser });
-        console.log('DATAORDER', data)
         var config = {
             withCredentials: true,
             method: 'DELETE',
@@ -46,13 +45,13 @@ export const actionSendDirectionToDB = ({ direccion, idOrderUser }) => {
         };
         axios(config)
             .then((res) => {
-                console.log('RESPUESTAAAA', res.data)
+
                 dispatch({
                     type: SEND_DIRECCION_TO_DB,
                     payload: res.data
                 })
             }).catch(error => {
-                console.log('ERROOOOOR', error)
+                console.log('ERROR', error)
             })
     }
 }
@@ -121,11 +120,9 @@ export const actionGetOrder = (idUser) => {
         axios.get(url + 'order/' + idUser, { withCredentials: true }).then(res => {
             dispatch({ type: GET_ORDER_BY_ID, payload: res.data })
             if (res.data.products) {
-                console.log('res.data.products');
                 const acum = res.data.products.reduce((acum, product) => {
                     return acum + product.Inter_Prod_Order.quantity
                 }, 0)
-                console.log('acum:',acum);
                 dispatch({ type: SET_QUANTITY, payload: acum })
             }
         })
@@ -172,10 +169,8 @@ export const actionEmptyCart = (idUser) => {
 }
 
 export const actionCancelarOrden = (idOrder) => {
-    console.log('idOrder', idOrder)
     return (dispatch) => {
         var data = qs.stringify({idOrder});
-        console.log('data', data)
         var config = {
             withCredentials: true,
             method: 'PUT',
@@ -191,7 +186,7 @@ export const actionCancelarOrden = (idOrder) => {
                     type: CANCELAR_ORDER,
                 })
             }).catch(error => {
-                console.log('ERROOOOOR', error)
+                console.log('ERROR', error)
             })
     }
 }
