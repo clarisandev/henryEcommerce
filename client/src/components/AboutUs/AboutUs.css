@@ -13,6 +13,7 @@
     right  */
 }
 .aboutUsText{
+    margin-top: 100px;
     display: flex;
     color: white;
     align-items: center;
@@ -29,3 +30,44 @@
     justify-content: flex-end;
     padding: 30px;
 }
+
+
+.insta{
+    width: 80px;
+    height: 60px;
+/*      border-radius: 290%; 
+    box-shadow: 0 5px 4px rgba(0, 0,0, 0.5); */
+}
+
+
+.face{
+    width: 80px;
+    height: 60px;
+
+}
+
+.socialmediaMenu ul {
+ /*    background-color: hotpink;  */
+ position: absolute;
+ top: 80%;
+ margin-left: 20px;
+ display: flex;
+}
+
+.socialmediaMenu ul li{
+list-style: none;
+margin: 0 15px;
+}
+
+.socialmediaMenu ul li:hover {
+/*      border-radius: 20%; 
+     background-color: #ffffff; 
+    box-shadow: 0 5px 4px rgba(0, 0,0, 0.5); */
+    transform: translate(0,-10px);
+   
+    }
+
+    .text-seg{
+        background-color: white;
+        color: thistle;
+    }

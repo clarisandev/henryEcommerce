@@ -7,6 +7,8 @@ import renderHTML from 'react-render-html';
 import { actionGetReviews, actionSetReview } from '../../redux/reviewsAction';
 import ButtonAddToCart from '../ButtonAddToCart/ButtonAddToCart';
 
+
+
 const ProductCard = (props) => {
 
     const { name, price, description, idProduct, images, stock } = props;
@@ -34,6 +36,7 @@ const ProductCard = (props) => {
                     : (<div></div>)
                 }
             </div>
+        
             <div className='contentCard'>
                 <h3 className='productInfoName'>{name}</h3>
                  <div className='ProductDataContainer'>
