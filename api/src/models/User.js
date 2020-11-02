@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+
 module.exports = (sequelize) => {
   sequelize.define('user', {
     idUser: {
@@ -15,9 +16,16 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       unique: true,
       allowNull: false,
+      required: true,
       validate: {
-        isEmail: true,
+        isEmail: true,        
       }
+    },
+    resetPasswordToken: {
+      type: DataTypes.STRING,
+    },
+    resetPasswordExpires: {
+      type: DataTypes.DECIMAL(38,0),
     },
     password: {
       type: DataTypes.STRING,
@@ -26,6 +34,10 @@ module.exports = (sequelize) => {
     level: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    img: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   });
 };

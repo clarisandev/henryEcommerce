@@ -1,17 +1,19 @@
 import React from 'react'
-import { Button } from 'reactstrap';
 import './AdminNavBar.css'
-const AdminNavBar = (props) => {
+const AdminNavBar = () => {
     return (
         <div className='admincontainer'>
             <form action="/MenuCrud">
-                <Button className='buttonStyle'>Lista de productos</Button>
+                <button className='buttonLoginAndRegister'>Lista de productos</button>
             </form>
             <form action="/Categories">
-                <Button className='buttonStyle'>Modificar categorias</Button>
+                <button className='buttonLoginAndRegister'>Lista de categorias</button>
+            </form>
+            <form action="/Usuarios">
+                <button className='buttonLoginAndRegister'>Usuarios</button>
             </form>
             <form action="/adminOrdersTable">
-                <Button className='buttonStyle'>Lista de ordenes</Button>
+                <button className='buttonLoginAndRegister'>Ordenes</button>
             </form>
         </div>
     )

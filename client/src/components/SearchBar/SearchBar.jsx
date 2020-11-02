@@ -1,18 +1,16 @@
 import React from 'react'
-// import { Button } from 'reactstrap'
 import './SearchBar.css'
-import { useDispatch } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { actionGetProductsBySearchTerm } from '../../redux/productsActions'
 import { useHistory, withRouter } from 'react-router'
 
-
-
 function SearchBarr() {
-    const history = useHistory()
+
     const dispatch = useDispatch()
-    const handleChange = (searchTerm) => {
-        dispatch(actionGetProductsBySearchTerm(searchTerm))
-        history.push('/Search')
+    const history = useHistory()
+    const searchFunction = (value) => {
+        dispatch(actionGetProductsBySearchTerm(value))
+        history.push('/search')
     }
 
     return (
@@ -21,9 +19,9 @@ function SearchBarr() {
             <div className='search-box'>
                 <input className="search-text" type="text" placeholder="¿Que estas buscando?" onKeyPress={e => {
                     if (e.key === 'Enter') {
-                        handleChange(e.target.value)
+                        searchFunction(e.target.value)
                     }
-                }}/>
+                }} />
                 <a href="/Search" className="search-btn">
                     <i className="fas fa-search"></i>
                 </a>
@@ -31,5 +29,17 @@ function SearchBarr() {
         </div>
     )
 }
+const mapStateToProps = (state) => {
+    return {
+        products: state.productsReducer.products,
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        actionGetProductsBySearchTerm: (term) => {
+            dispatch(actionGetProductsBySearchTerm(term))
+        }
+    }
+}
 const SearchBar = withRouter(SearchBarr)
-export default SearchBar;
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);

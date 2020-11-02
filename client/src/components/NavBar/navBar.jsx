@@ -1,38 +1,80 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Logo from './Images/Logo.png'
-import Cart from './Images/Cart.png'
 import './navBar.css'
 import SearchBar from '../SearchBar/SearchBar'
-import { Modal, Button } from 'reactstrap'
+import { Modal } from 'reactstrap'
 import Login from '../LogIn/Login'
 import Register from '../Register/Register'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { actionGetOrder } from '../../redux/ordersActions'
+import UserLogged from '../UserLogged/UserLogged'
+import { useCookies } from 'react-cookie';
+import Cart from '../UserLogged/Cart'
+import { actionSetVerified, actionVerifyCookies, actionSetCookieToStore, actionGetMe, actionSetModalLogin } from '../../redux/usersActions'
+import actionGetCategories from '../../redux/categoriesActions'
+
 
 const NavBar = () => {
 
-    // ---------------------------- States ---------------------------- //
-    const [modalLogin, setModalLogin] = useState(false)
+    const [cookie, setCookie, removeCookie] = useCookies(['ttkk']);
+    const dispatch = useDispatch()
+    const modalLogin = useSelector(store => store.usersReducer.modalLogin)
     const [modalRegister, setModalRegister] = useState(false)
-    // const { user } = useSelector(state => state.usersReducer.idUser)
-    const user = 0
+    const idUser = useSelector(state => state.usersReducer.idUser)
+    const level = useSelector(state => state.usersReducer.level)
+    const verified = useSelector(state => state.usersReducer.verified)
+    const loggedOut = useSelector(state => state.usersReducer.loggedOut)
 
-    // ---------------------------- Functions ---------------------------- //
+    
 
-    // ----- To Open Modals ----- //
-    const modalLoginView = () => setModalLogin(!modalLogin);
+    const [google, setGoogle] = useState(true)
+    const [github, setGithub] = useState(true)
+
+    useEffect(() => {
+        if (Object.keys(cookie).length <= 1) {
+            dispatch(actionVerifyCookies(cookie))
+        }
+        else {
+            dispatch(actionGetMe())
+        }
+        dispatch(actionGetOrder(cookie.idUser));
+        setTimeout(() => {
+            return dispatch(actionGetOrder(cookie.idUser))
+        }, 300);
+        dispatch(actionSetCookieToStore(cookie))
+        dispatch(actionGetCategories())
+    }, [])
+    if (loggedOut) {
+            removeCookie('idUser')
+            removeCookie('level')
+            // removeCookie('connect.sid')
+            // setTimeout(() => {
+            //     window.location.reload()
+            // }, 200);
+    }
+    if (verified) {
+        setCookie('idUser', idUser, { path: '/' })
+        setCookie('level', level, { path: '/' })
+        dispatch(actionSetVerified(false))
+    }
+    if (google) {
+        setGoogle(false)
+        dispatch(actionGetMe())
+    }
+    if (github) {
+        setGithub(false)
+        dispatch(actionGetMe())
+    }
+    const categories = useSelector(state => state.categoriesReducer.categories)
+
+    const modalLoginView = () => dispatch(actionSetModalLogin(!modalLogin));
     const modalRegisterView = () => setModalRegister(!modalRegister);
-
-    // ----- To Close Modals ----- //
-    const modalLoginClose = () => setModalLogin(false);
-    const modalRegisterClose = () => setModalRegister(false);
-
-
-    const ChangeModal = async () => {
-        await modalLoginView()
-        await modalRegisterView()
+    const modalRegisterClose = () => setModalRegister(false)
+    const ChangeModal = () => {
+        modalLoginView()
+        modalRegisterView()
     }
     return (
-
         <div >
             <div className='navContainer'>
                 <div className='logoContainer'>
@@ -41,48 +83,57 @@ const NavBar = () => {
                     </a>
                 </div>
                 <div className='routerContainer'>
-                    <div className='buttonsContainer'>
-                        <form action="/">
-                            <button className='buttonHome'>Home</button>
-                        </form>
-                        <form action="/catalogue">
-                            <button className='buttonProducts'>Products</button>
-                        </form>
-                        {user ? (
-                            <form action="/Account">
-                                <button className='buttonProducts'>My Account</button>
-                            </form>
-                        ) : (<div></div>)}
+                    <ul className="menu">
+                        <li><a className = 'buttonProducts' href="/">HOME</a></li>
+                        <li className="dropdownCategories">
+                            <a className = 'buttonProducts' href="/catalogue?filter=All categories">PRODUCTOS</a>
+                            <ul className="dropdownSubCat">
+                                {categories.map(category => {
+                                    return <li><a className='categoryDrop' href={"/catalogue?filter="+category.name}>{category.name}</a></li>
+                                })
+                                }
+                            </ul>
+                        </li>
+                        <li><a className = 'buttonProducts' href="/aboutUs">ACERCA DE NOSOTROS</a></li>
+                        </ul>
+                       
                     </div>
                     <div className='searchBar'>
                         <SearchBar />
                     </div>
-                    {user ?
+                    {level === 'user' || level === 'admin' ?
                         (
-                            <div className='cartContainer'>
-                                <a href='/order'>
-                                    <img className='buttonCart' src={Cart} alt='Cart' />
-                                </a>
-                                <div className='quantityProducts'>7</div>
+                            <div className='userLogged' >
+                                <UserLogged />
+                                <div className='cartContainer'>
+                                    <Cart />
+                                </div>
                             </div>
                         )
                         :
                         (
-                            <div className='registerContainer'>
-                                <button className='signup' onClick={e => modalLoginView()}>Login</button>
-                                <button className='login' onClick={e => modalRegisterView()}>Register</button>
+                            <div className='SessionContainer'>
+                                <div className='registerContainer'>
+                                    <button className='signup' onClick={e => modalLoginView()}>Login</button>
+                                    <button className='login' onClick={e => modalRegisterView()}>Register</button>
+                                </div>
+                                <div className='cartContainer'>
+                                    <Cart />
+                                </div>
                             </div>
                         )}
                     <Modal isOpen={modalLogin}>
-                        <Login modalLoginClose={modalLoginClose} ChangeModal={ChangeModal} />
+                        <Login ChangeModal={ChangeModal} setGoogle={setGoogle} setGithub={setGithub}  />
                     </Modal>
-
                     <Modal isOpen={modalRegister}>
-                        <Register modalRegisterClose={modalRegisterClose} ChangeModal={ChangeModal} />
+                        <Register modalRegisterClose={modalRegisterClose} ChangeModal={ChangeModal} setGoogle={setGoogle} setGithub={setGithub} />
                     </Modal>
                 </div>
+                <div className='footerContainer'>
+                © La Cosería, Grupo 3 webpart 02 - Henry
+                </div>
             </div>
-        </div>
+
     )
 }
 export default NavBar;

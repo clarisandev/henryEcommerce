@@ -1,0 +1,49 @@
+.AdminOrdersTableComponentsContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.contentContainer{
+    margin-top: 2vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.NoOrders {
+    display: flex;
+    color: white;
+    justify-content: center;
+    align-items: center;
+}
+.buttonRestar{
+    display: none;
+}
+.divContainerOrders{
+    border: 1px solid white;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: rgba(74, 74, 74, 0.25);
+    backdrop-filter: blur(7px);
+}
+
+.ordersCont {
+    margin-right: 15px;
+    padding-top: 10px;
+    width: 100%;
+    /* display: flex; */
+    align-self: center;
+}
+.ordersAccountCont{
+    margin-right: 15px;
+    padding-top: 10px;
+    width: 100%;
+    align-self: center;
+}
+.userAccountContainer{
+    display: flex;
+    align-content: center;
+}

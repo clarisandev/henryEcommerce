@@ -3,9 +3,46 @@ const {
     User,
     Order,
     Inter_Prod_Order,
-    Product
+    Product,
+    Direccion
 } = require('../db.js');
 const Sequelize = require("sequelize");
+const bcrypt = require("bcrypt");
+const passport = require('passport');
+const initializePassport = require('../passport-config');
+initializePassport(passport, email => {
+    passport,
+        email => User.findOne({
+            where: {
+                email: email
+            }
+        })
+})
+/////////////////////////////////////////////////////////////////////////////////////////////// FUNCTIONS TO SECURITY ROUTES
+function isAdmin(req, res, next) {
+    if (req.isAuthenticated()) {
+        if (req.user.level === 'admin') {
+            console.log('this user is ADMIN')
+            return next()
+        }
+        console.log('this user DOESNT ADMIN')
+    }
+    console.log('THIS USER NOT AUTHENTICATED')
+    // ** -- DIRIGIR A PAGINA QUE PREGUNTE SI ESTA PERDIDO ** -- //
+    res.redirect('/')
+}
+
+function isUserOrAdmin(req, res, next) {
+    if (req.isAuthenticated()) {
+        if (req.user.level === 'user' || req.user.level === 'admin') {
+            console.log('el usuario esta logeado')
+            return next()
+        }
+        console.log('this user is GUEST')
+    }
+    console.log('THIS USER NOT AUTHENTICATED')
+    res.redirect('htpp://localhost:3000/auth/login')
+}
 
 /////////////////////////////////////////////////////////////////GET
 
@@ -45,11 +82,16 @@ server.get('/:idUser/cart', (req, res, next) => {
         })
     }).catch(next);
 })
+
 server.get('/:idUser', (req, res, next) => {
     User.findOne({
         where: {
             idUser: req.params.idUser
-        }
+        },
+        include: [{
+            model: Order,
+            as: 'orders'
+        }]
     }).then((user) => {
         res.send(user)
     })
@@ -61,7 +103,6 @@ server.get('/', (req, res, next) => {
 })
 //////////////////////////////////////////////////////////////////POST
 server.post('/:idUser/cart', (req, res, next) => {
-    // body: { idProduct, quantity }
     let respuesta = {}
     Order.findOne({
         where: {
@@ -92,10 +133,19 @@ server.post('/:idUser/cart', (req, res, next) => {
                 idProduct: req.body.idProduct
             }
         }).then((inter) => {
-            return inter.update({
-                ...inter,
-                quantity: inter.quantity + req.body.quantity
-            })
+            if (inter.quantity + req.body.quantity <= 0) {
+                return Inter_Prod_Order.destroy({
+                    where: {
+                        idOrder: order.idOrder,
+                        idProduct: req.body.idProduct
+                    }
+                })
+            } else {
+                return inter.update({
+                    ...inter,
+                    quantity: inter.quantity + req.body.quantity
+                })
+            }
         }).catch(() => {
             return Inter_Prod_Order.create({
                 idOrder: order.idOrder,
@@ -108,27 +158,42 @@ server.post('/:idUser/cart', (req, res, next) => {
         res.send(respuesta)
     }).catch(next)
 })
-server.post('/', (req, res, next) => {
+//////// register
+server.post('/', async (req, res, next) => {
     const {
         name,
         email,
         password,
-        level
     } = req.body
-    User.create({
-        name,
-        email,
-        password,
-        level
-    }).then((newUser) => {
-        return Order.create({
-            idUser: newUser.idUser,
-        })
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    User.findOne({
+        where: {
+            email: email
+        }
+    }).then((user) => {
+        if (!user) {
+            User.create({
+                name: name,
+                email: email,
+                password: hashedPassword,
+                level: 'user',
+                img: 'https://res.cloudinary.com/facu9685/image/upload/v1602536866/henry/zersguujnkufynerj633.png'
+            }).then(user => {
+
+                return Order.create({
+                    idUser: user.idUser,
+                    status: 'CREADA'
+                })
+            })
+        } else {
+            res.status(404).send({
+                result: "El usuario ya existe"
+            })
+        }
     }).then(() => {
-        res.send({
-            result: 'Usuario creado'
-        })
-    }).catch(next);
+        res.send('User Created')
+    })
 });
 ///////////////////////////////////////////////////////////////PUT
 server.put('/:idUser/cart', (req, res, next) => {
@@ -142,34 +207,58 @@ server.put('/:idUser/cart', (req, res, next) => {
             status: 'CARRITO'
         }
     }).then(order => {
-        return (Inter_Prod_Order.findOne({
+        Inter_Prod_Order.findOne({
             where: {
                 idOrder: order.idOrder,
                 idProduct: idProduct
             }
-        }), order)
-    }).then((relacion, order) => {
-        relacion.update({
-            ...relacion,
-            quantity: quantity
+        }).then((relacion) => {
+            return relacion.update({
+                ...relacion,
+                quantity: quantity
+            })
         })
         return order
     }).then((order) => {
         res.send(order)
     }).catch(next);
 })
-server.put('/:idUser', (req, res, next) => {
+
+server.put('/', (req, res, next) => {
+
+    const { name, email, nuevaContraseña, contraseña } = req.body
+
     User.findOne({
         where: {
-            idUser: req.body.idUser
+            idUser: req.user.idUser
         }
-    }).then(user => {
-        return user.update({
-            ...user,
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password
-        })
+    }).then(async (user) => {
+        if (await bcrypt.compare(contraseña, user.password)) {
+            if (name) {
+                return user.update({
+                    ...user,
+                    name: req.body.name,
+                })
+            }
+            if (email) {
+                return user.update({
+                    ...user,
+                    email: req.body.email,
+                })
+            }
+            if (nuevaContraseña) {
+                const hasshed = await bcrypt.hash(req.body.nuevaContraseña, 10)
+                console.log(nuevaContraseña)
+                console.log('CAMBIANDO CONTRASEÑA')
+                console.log('newContr', hasshed)
+                return user.update({
+                    ...user,
+                    password: hasshed,
+                }).catch(error => console.log(error))
+            }
+        } else {
+            res.status(404).send('Contraseña erronea')
+        }
     }).then((userActualizado) => {
         res.send(userActualizado)
     }).catch(next);
@@ -182,20 +271,17 @@ server.delete('/:idUser/cart', (req, res, next) => {
             status: 'CARRITO'
         }
     }).then(order => {
-        return order.update({
-            ...order,
-            status: 'CANCELADA'
+        Inter_Prod_Order.destroy({
+            where: {
+                idOrder: order.idOrder
+            }
         })
-    }).then(() => {
-        return Order.create({
-            idUser: req.params.idUser
-        })
-    }).then(() => {
-        res.send({
-            result: 'Carrito vaciado'
-        })
+        return order
+    }).then((order) => {
+        res.send(order)
     }).catch(next);
 })
+
 server.delete('/:idUser', (req, res, next) => {
     User.destroy({
         where: {
@@ -207,39 +293,37 @@ server.delete('/:idUser', (req, res, next) => {
         })
     }).catch(next);
 });
-/////////////////////////////////////////////DEV
-server.post('/aaa', (req, res, next) => {
-    User.create({
-        name: 'Michael',
-        email: 'michael@live.com',
-        password: 'aosidj',
-        level: 'admin'
-    }).then(() => {
-        return User.create({
-            name: 'Lili',
-            email: 'lili@gmail.com',
-            password: 'jasjdjsjd',
-            level: "user"
-        }).then((newUser) => {
-            Order.create({
-                idUser: newUser.idUser,
-            })
-        })
-    }).then(() => {
-        return User.create({
-            name: 'Sophie',
-            email: 'sophie@gmail.com',
-            password: 'jasjdjsjd',
-            level: 'user'
-        }).then((newUser) => {
-            Order.create({
-                idUser: newUser.idUser,
-            })
-        })
-    }).then(() => {
-        res.send({
-            result: 'user creados'
-        })
-    }).catch(next)
+
+
+////////////////////////////////////////////////////////////////// ROUTES FOR DIRECTIONS
+
+server.post('/directions', (req, res) => {
+    Direccion.findAll({
+        where: {
+            idUser: req.user.idUser
+        }
+    }).then(direcciones => {
+        res.send(direcciones)
+    })
 })
+
+
+server.post('/upload', (req, res) => {
+
+    const { linkImg } = req.body;
+
+    User.findOne({
+        where: {
+            idUser: req.user.idUser
+        }
+    }).then(user => {
+        return user.update({
+            ...user,
+            img: linkImg
+        })
+    })
+
+})
+
+
 module.exports = server;

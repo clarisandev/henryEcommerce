@@ -1,26 +1,149 @@
 .orderContainer{
+    background-color: white;
     display: flex;
-    margin-top: 100px;
+    margin: 25px;
     flex-direction: column;
+    text-decoration: none;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    align-self: center;
+    justify-self: center;
 }
-.footerContent{
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: space-around;
-}
-.footerOrder{
-    margin: 20px;
-    /* display: flex; */
-    /* justify-content: flex-end; */
-}
-.textPrice{
+.orderVacia{
+    text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 40px;
+    font-size: 30px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+}
+.footerContent{
+    display: flex;
+    margin: 20px;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.textAmount{
+    margin-left: 20px;
+}
+.textQuantity {
+    margin-left: 20px;
+}
+.shipPrice{
+    font-size: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+}
+.totalPrice{
+    display: flex;
+    flex-direction: column;
+}
+.fa-shipping-fast{
+    padding-left: 5px;
+}
+.shipbutton{
+    font-size: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    margin: 0%;
+}
+.textPrice{
+    display: flex;
+    width: 100%;
+    align-items: flex-end;
     margin-right: 10px;
-    font-size: 35px;
+    font-size: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
 }
-#buttonEndOrden{
-    height: 100px;
-    width: 200px;
+.imgtxtCont{
+    display: flex;
+    justify-content: space-between;
 }
+.imageTxtOrderPrice{
+    display: flex;
+    width: 100%;
+    align-items: flex-end;
+    margin-right: 10px;
+    font-size: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+}
+.containerButtonEndOrden{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.buttonEndOrden {
+    display: flex;
+    font-size: 13px;
+    justify-self: center;
+    padding: 0.46em 1.6em;
+    border: 0.1em solid #ffffff;
+    margin: 10px 0.2em 0.2em 0;
+    border-radius: 0.12em;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    color: #ffffff;
+    background-color: rgba(47, 54, 64, 0.57);
+    text-align: center;
+    transition: all 0.15s;
+}
+
+
+
+
+.shippingContainer{
+    padding-right: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.containerButtonEnvio{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 100%;
+}
+.buttonEnvio{
+    display: flex;
+    font-size: 13px;
+    align-items: center;
+    justify-self: flex-start;
+    padding: 0.46em 1.6em;
+    border: 0.1em solid #ffffff;
+    margin: 10px 0.2em 0.2em 0;
+    border-radius: 0.12em;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    color: #ffffff;
+    background-color: rgba(47, 54, 64, 0.57);
+    text-align: center;
+    transition: all 0.15s;
+}
+.buttonEndOrden:hover,
+.buttonEnvio:hover {
+    text-shadow: rgb(74, 74, 74);
+    color:white;
+    border-color: rgb(74, 74, 74);
+    background-color: rgba(0, 0, 0, 0.815);
+    backdrop-filter: blur(7px);
+}
+@media all and (max-width:30em) {
+    .buttonEndOrden,
+    .buttonEnvio {
+        display: block;
+        margin: 0.4em auto;
+    }
+}
+
+

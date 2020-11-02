@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
     Button,
     ModalHeader,
@@ -6,49 +7,49 @@ import {
     FormGroup,
     ModalFooter,
 } from "reactstrap";
+import { actionPostCategory } from "../../../redux/categoriesActions";
 import './FormModalAdd.css'
 
 const FormModalAdd = (props) => {
-
-    const { addCategory, modalAddViewFalse, categories } = props;
-
-    const [category, setCategory] = useState(categories)
-
+    const { modalAddViewFalse } = props;
+    const categories = useSelector(store => store.categoriesReducer.categories)
+    const dispatch = useDispatch()
+    const [category, setCategory] = useState()
     const handleChange = event => {
         const { name, value } = event.target
         setCategory({ ...category, [name]: value })
-        console.log(category)
     }
-
+    const addCategory = (category) => {
+        dispatch(actionPostCategory(category))
+        modalAddViewFalse()
+    }
     return (
         <div className='addCategory'>
             <ModalHeader>
-                <div><h3>Add Category</h3></div>
+                <div><h3>AGREGAR CATEGORIAS</h3></div>
             </ModalHeader>
-
-            <ModalBody>
-                <FormGroup >
-                    <label> Category Name: </label>
-                    <input className="form-control" name="name" type="text" onChange={handleChange} />
+            <ModalBody className='addCatBody'>
+                <FormGroup className='categoryName'>
+                    <label className="categoryDetail"> Nombre</label>
+                    <input className="inputName" name="name" type="text" onChange={handleChange}/>
                 </FormGroup>
-
-                <FormGroup>
-                    <label>Description:</label>
-                    <input className="form-control" name="description" type="text" onChange={handleChange} />
+                <FormGroup className='categoryDescription'>
+                    <label className="categoryDetail">Descripción</label>
+                    <input className="inputName" name="description" type="text" onChange={handleChange}/>
                 </FormGroup>
             </ModalBody>
-            <ModalFooter>
-                <Button className='submitButton'
+            <ModalFooter className='footerButtons'>
+                <Button className='buttonCat'
                     onClick={event => {
                         event.preventDefault()
                         if (!category.name || !category.description) return window.alert('Empty Inputs')
-                        if (categories.find(categories => categories.name.toUpperCase() === category.name.toUpperCase())) return window.alert('This name already been used')
+                        if (categories.find(
+                            categories => categories.name.toUpperCase() === category.name.toUpperCase()
+                        )) return window.alert('This name already been used')
                         addCategory(category)
-                        modalAddViewFalse()
                     }}
-                >
-                    Submit </Button>
-                <Button className='exitButton' onClick={e => modalAddViewFalse()}>Exit</Button>
+                > AGREGAR </Button>
+                <Button className='buttonCat' onClick={e => modalAddViewFalse()}>SALIR</Button>
             </ModalFooter>
         </div>
     )

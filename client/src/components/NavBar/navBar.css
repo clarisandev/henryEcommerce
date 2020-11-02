@@ -1,13 +1,110 @@
-@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap%27');
-
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,800,900');
 .navContainer{
     display:flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     height: 75px;
-    background-color: #def5d1;
+    background-color: transparent;
+    color: rgb(36, 34, 34);
 }
+
+  
+  .buttonProducts {
+    padding:0;
+    margin: 30px;
+    font-family:'Poppins', sans-serif;
+    font-weight:300;
+    color: #ffffff;
+    text-decoration: none;
+  }
+  
+  .menu {
+    margin: 0;
+    display: -webkit-box;
+    display: flex;
+    list-style: none;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .menu .buttonProducts:hover {
+    color: grey;
+    list-style: none;
+    text-decoration: none;
+  }
+  .dropdownCategories{
+    height: 10%;
+  }
+  
+  .dropdownCategories > a {
+    display: flex;
+    align-items: center;
+    margin: 10px 70px;
+  }
+  .categoryDrop:hover{
+    color: grey;
+    background-color: white;
+    text-decoration: none;
+  }
+  .categoryDrop {
+    list-style: none;
+    text-transform: uppercase;
+    display: block;
+    margin: 8px 0px;
+    padding: .25rem 1.5rem;
+    clear: both;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    color: white;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    text-decoration: none;
+  }
+  
+  .dropdownCategories:hover .dropdownSubCat {
+    opacity: 1;
+    color: grey;
+    text-decoration: none;
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .dropdownSubCat{
+    opacity: 0;
+    -webkit-transition: opacity 0.3s ease-in-out, -webkit-transform 0.3s cubic-bezier(0.88, -0.72, 0, 1);
+    transition: opacity 0.3s ease-in-out, -webkit-transform 0.3s cubic-bezier(0.88, -0.72, 0, 1);
+    transition: transform 0.3s cubic-bezier(0.88, -0.72, 0, 1), opacity 0.3s ease-in-out;
+    transition: transform 0.3s cubic-bezier(0.88, -0.72, 0, 1), opacity 0.3s ease-in-out, -webkit-transform 0.3s cubic-bezier(0.88, -0.72, 0, 1);
+    -webkit-transform: translateY(-4rem);
+            transform: translateY(-4rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    z-index: 1;
+    width: 18%;
+
+    background-color: rgba(47, 54, 64, 0.77);
+    backdrop-filter: blur(7px);
+  }
+  .dropdownSubCat .buttonProducts {
+    font-weight: 300;
+    font-size: 12px
+  }
+  .categoryDrop:hover {
+    color: rgb(36, 34, 34);
+    background-color: white;
+  } 
 
 /* ------------------- Logo Space ------------------- */
 
@@ -38,16 +135,24 @@
     align-items: center;
     margin-right: 50px;
 }
-.buttonHome{
-    padding:0;
-    margin: 30px;
-    font-weight: bolder;
-    font-family: 'Abril Fatface', cursive;
-}
+.buttonHome,
 .buttonProducts{
     padding:0;
     margin: 30px;
-    font-family: 'Abril Fatface', cursive;
+    font-family:'Poppins', sans-serif;
+    font-weight:300;
+    color: #ffffff;
+}
+.nomematen {
+
+    width: 100px;
+    height: 100px;
+}
+.fafa{
+    margin-top: 90px;
+    margin-right: 90px;
+    width: 50px;
+    height:50px ;
 }
 
 .cartContainer{
@@ -63,56 +168,68 @@
     width: 25px;
 }
 .quantityProducts{
-    font-family: 'Abril Fatface', cursive;
+    font-family:'Poppins', sans-serif;
+    font-weight:300;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: #f56868 1px solid;
     border-radius: 50%;
     height: 30px;
     width: 30px;
-    background-color: #f56868;
     margin-right: 50px;
     margin-left: 30px;
     color: white;
     font-weight: bolder;
-
 }
 .searchBar{
     margin-right: 50px;
 }
-
+.userLogged{
+    display: flex;
+}
 
 /* ------------------- Register Space ------------------- */
+
+.SessionContainer {
+    display: flex;
+    flex-direction: row;
+}
 
 .registerContainer{
     display:flex;
     justify-content: center;
     flex-direction: column;
-    width: 150px;
+    width: 100px;
+    font-family:'Poppins', sans-serif;
+    font-weight:300;
+    font-size: 12px;
+}
+.signup,
+.login{
+    cursor: pointer;
+    color: white;;
 }
 .signup{
-    font-family: 'Abril Fatface', cursive;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
     margin-bottom: 5px;
 }
-.login{
-    font-family: 'Abril Fatface', cursive;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-}
-.login:hover{
-    /* text-decoration: underline; */
-    color: grey;
-}
-.signup:hover{
+.fa.fa-shopping-cart.fa_custom.fa-1x:hover,
+.buttonProducts:hover,
+.login:hover,
+.signup:hover {
     /* text-decoration: underline; */
     color: grey;
 }
 img {
     border-radius: 0px;
     box-shadow: 0px 0px 0px 0px ;
+}
+.footerContainer{
+  position: fixed;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300;
+  font-size: 10px;
+  color: white;
+  background-color: #212529;
+  width: 100%;
+  bottom: 0%;
 }

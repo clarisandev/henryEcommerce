@@ -1,34 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import {
-    Button,
     ModalHeader,
     ModalBody,
     FormGroup,
     ModalFooter,
-    ListGroup,
-    Dropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem
+    ListGroup
 } from "reactstrap";
 import './ModalEditProduct.css'
 import SelectImage from '../../SelectImage/SelectImage'
+import { useDispatch, useSelector } from "react-redux";
+import { actionUpdateProduct, actionUpdateProductLocalStore } from "../../../redux/productsActions";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 const ModalEditProduct = (props) => {
-    const { currentProducts, updateProduct, modalCloseEdit, categories } = props;
-    const [product, setProduct] = useState(currentProducts);
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setProduct({
-            ...product,
-            [name]: value
-        });
-    }
-    // States Upload Image
+
+    toast.configure()
+
+    const dispatch = useDispatch()
+    const { modalCloseEdit } = props
+    const categories = useSelector(state => state.categoriesReducer.categories)
+    const currentProduct = useSelector(store => store.productsReducer.product)
+    
     const [loading, setLoading] = useState(false)
     const [imagesUpload, setImagesUpload] = useState('')
-    // Funciones Upload Image
     const uploadImage = async e => {
         const files = e
         const data = new FormData()
@@ -41,53 +37,50 @@ const ModalEditProduct = (props) => {
                 body: data
             })
         const file = await res.json()
-        setProduct({ ...product, images: file.secure_url })
+        actionUpdateProductLocalStore({ ...currentProduct, images: file.secure_url })
         setImagesUpload(file.secure_url)
         setLoading(false)
     }
-    // ESTADOS DESCRIPTION
-    const [descriptionState, setDescriptionState] = useState(product.description)
-    const descriptionChange = (value) => {
-        setProduct({
-            ...product,
-            description: value
-        })
+    const handleChange = (event) => {
+        const { name, value } = event.target
+        dispatch(actionUpdateProductLocalStore({
+            ...currentProduct,
+            [name]: value
+        }))
     }
-    const setCategory = (e) => {
-        setProduct({
-            ...product,
-            categories: e.target.value
-        })
+    const descriptionChange = (event) => {
+        dispatch(actionUpdateProductLocalStore({
+            ...currentProduct,
+            description: event
+        }))
     }
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const toggle = () => setDropdownOpen(prevState => !prevState);
     return (
-        <div className='editProdContainer'>
+        <div className='addProdContainer'>
             <ModalHeader>
-                <div><h3>Edit product</h3></div>
+                <div><h3>Editar producto</h3></div>
             </ModalHeader>
             <ModalBody>
-                <FormGroup className = 'uploadImage'  style={{ display: "flex", justifyContent: 'center' }}>
-                   <ListGroup horizontal className="inputContainer">
-                       <SelectImage uploadImage={uploadImage} />
+                <FormGroup className='uploadImage' style={{ display: "flex", justifyContent: 'center' }}>
+                    <ListGroup horizontal className="inputContainer">
+                        <SelectImage uploadImage={uploadImage} />
                     </ListGroup>
-                </FormGroup>              
-                <FormGroup className = 'productName'>
-                    <label className = 'productDetail'>Product name: </label>
+                </FormGroup>
+                <FormGroup className='productName'>
+                    <label className='productDetailName'>Nombre </label>
                     <input
-                        className = 'inputName'
+                        className='inputMenuCrud'
                         name='name'
                         type='text'
                         onChange={handleChange}
-                        value={product.name}
+                        value={currentProduct.name}
                     />
                 </FormGroup>
                 <FormGroup>
-                    <label className = 'productDetail'>Description: </label>
+                    <label className='productDetailMenuCrud'>Descripcion </label>
                     <form>
-                        <Editor id = 'productEditor'
+                        <Editor id='productEditor'
                             apiKey='efxwg61t4p8hkjnu4a5t9y0ah1jo0kf445jywqtnqljny3fy'
-                            value={descriptionState}
+                            value={currentProduct.description}
                             init={{
                                 height: 150,
                                 menubar: false
@@ -98,39 +91,35 @@ const ModalEditProduct = (props) => {
                 </FormGroup>
                 <ListGroup horizontal className="propertyContainer" style={{ alignItems: 'center', justifyContent: 'space-around' }}>
                     <FormGroup className="priceContainer">
-                        <label className="productDetail">Price: </label>
+                        <label className="productDetailMenuCrud">Precio </label>
                         <input
                             className='form-control'
                             name='precio'
                             type='number'
                             onChange={handleChange}
-                            value={product.precio}
+                            value={currentProduct.precio}
                         />
                     </FormGroup>
-                    <FormGroup  className="stockContainer">
-                        <label  className="productDetail">Stock: </label>
+                    <FormGroup className="stockContainer">
+                        <label className="productDetailMenuCrud">Stock </label>
                         <input
                             className='form-control'
                             name='stock'
                             type='number'
                             onChange={handleChange}
-                            value={product.stock}
+                            value={currentProduct.stock}
                         />
                     </FormGroup>
                     <FormGroup className="categoriesContainer">
-                        <label className = 'productDetail'>Categories: </label>
-                        <Dropdown className = 'dropdownCat' isOpen={dropdownOpen} toggle={toggle}>
-                            <DropdownToggle className = 'dropdownCat' caret>
-                            {product.categories}
-                            </DropdownToggle>
-                            <DropdownMenu className = 'dropdownCat'>
-                                {categories.map( c => {
-                                    return(
-                                        <DropdownItem name='categories' value={c.name} onClick={handleChange}>{c.name}</DropdownItem>
-                                    )
-                                })}                  
-                            </DropdownMenu>
-                        </Dropdown>
+                        <label className='productDetailMenuCrud'>Categoria </label>
+                        <select className='form-control' name='categories' onChange={handleChange} >
+                            {categories.map(c => {
+                                return (
+                                    (currentProduct.categories !== undefined) ? ((c.name === currentProduct.categories.name) ? (<option className='form-control' selected name='categories' value={c.name}>{c.name}</option>) :
+                                        (<option className='form-control' name='categories' value={c.idCategory}>{c.name}</option>)) : (<option></option>)
+                                )
+                            })}
+                        </select>
                     </FormGroup>
                 </ListGroup>
             </ModalBody>
@@ -138,16 +127,24 @@ const ModalEditProduct = (props) => {
                 <button className='buttonAdd'
                     onClick={e => {
                         e.preventDefault();
-                        if (!product.name || !product.description || !product.precio || !product.stock) return window.alert('Empty input')
-                        updateProduct(product);
-                        console.log(product)
+                        if (!currentProduct.name || !currentProduct.description || !currentProduct.precio || !currentProduct.stock) return toast.error("Todos los campos son obligatorios", {
+                            position: "top-center",
+                            autoClose: 2500,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                        dispatch(actionUpdateProduct(currentProduct));
                         modalCloseEdit();
+                        window.location.reload()
                     }}
-                >Submit
+                >EDITAR
                 </button>
                 <button className='buttonExit'
                     onClick={e => modalCloseEdit()}
-                >Exit
+                >SALIR
                 </button>
             </ModalFooter>
         </div>

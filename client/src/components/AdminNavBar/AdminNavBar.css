@@ -1,13 +1,23 @@
-.buttonStyle {
-    margin: 10px;
-    border-radius: 5px;
-    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+.productInfo{
+    display: none;
+}
+.buttonCloseModalOrdersTable{
+    color: black;
+    background-color: red;
+}
+.buttonStyle:hover {
+    text-shadow: 0 0 0.5px #DFA06E;
     color: #DFA06E;
-    background-color: #2f3640;
-    font-weight: bold;
+    border-color: #DFA06E;
+}
+@media all and (max-width:30em) {
+    .buttonStyle {
+        display: block;
+        margin: 0.4em auto;
+    }
 }
 .admincontainer {
     display: flex;
-    flex-direction: row;
     justify-content: center;
+    margin: 0px 0px 100px 0px;
 }

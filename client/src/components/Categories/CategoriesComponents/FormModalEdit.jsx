@@ -10,39 +10,33 @@ import './FormModalEdit.css'
 
 const FormModalEdit = (props) => {
   const { currentCategory, modalEditViewFalse, updateCategory, categories } = props;
-
   const [category, setCategory] = useState(currentCategory);
-
   const handleChange = (event) => {
     const { name, value } = event.target;
-
     setCategory({ ...category, [name]: value });
   };
-
   return (
-    <div className= 'editCategory'>
+    <div className='addCategory'>
       <ModalHeader>
         <div>
-          <h3>Edit Category</h3>
+          <h3>Editar Categoria</h3>
         </div>
       </ModalHeader>
-
-      <ModalBody>
-        <FormGroup>
-          <label>Category Name:</label>
+      <ModalBody className='addCatBody'>
+                <FormGroup className='categoryName'>
+          <label className="categoryDetail">Nombre:</label>
           <input
-            className="form-control"
+            className="inputName" 
             name="name"
             type="text"
             onChange={handleChange}
             value={category.name}
           />
         </FormGroup>
-
-        <FormGroup>
-          <label>Description:</label>
+        <FormGroup className='categoryDescription'>
+          <label className="categoryDetail">DESCRIPCION:</label>
           <input
-            className="form-control"
+            className="inputName" 
             name="description"
             type="text"
             onChange={handleChange}
@@ -50,21 +44,21 @@ const FormModalEdit = (props) => {
           />
         </FormGroup>
       </ModalBody>
-      <ModalFooter>
-        <Button
-          className='submitButton' 
+      <ModalFooter className='footerButtons'>
+                <Button className='buttonCat'
           onClick={(event) => {
             event.preventDefault();
             if (!category.name || !category.description) return window.alert('Empty Inputs')
-            if(categories.find(categories => categories.name.toUpperCase() === category.name.toUpperCase())) return window.alert('This name already been used')
+            if (categories.find(
+              categories => categories.name.toUpperCase() === category.name.toUpperCase()
+            )) return window.alert('This name already been used')
             updateCategory(category);
             modalEditViewFalse();
           }}
-        >
-          Submit{" "}
+        > AGREGAR
         </Button>
-        <Button className='exitButton' onClick={(e) => modalEditViewFalse()}>
-          Exit
+        <Button className='buttonCat' onClick={(e) => modalEditViewFalse()}>
+          SALIR
         </Button>
       </ModalFooter>
     </div>

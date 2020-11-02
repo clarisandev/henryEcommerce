@@ -36,7 +36,9 @@ const {
   Image,
   User,
   Order,
-  Inter_Prod_Order
+  Review,
+  Inter_Prod_Order,
+  Direccion
 } = sequelize.models;
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
@@ -54,6 +56,18 @@ Categories.belongsToMany(Product, {
 User.hasMany(Order, {
   foreignKey: 'idUser',
 });
+User.hasMany(Review, {
+  foreignKey: 'idUser'
+});
+Product.hasMany(Review, {
+  foreignKey: 'idProduct'
+});
+User.hasMany(Direccion, {
+  foreignKey: 'idUser'
+})
+Order.hasMany(Direccion, {
+  foreignKey: 'idOrder'
+})
 Order.belongsToMany(Product, {
   through: "Inter_Prod_Order",
   foreignKey: 'idOrder',
