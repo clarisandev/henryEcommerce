@@ -6,27 +6,32 @@ import { Modal } from 'reactstrap'
 import Login from '../LogIn/Login'
 import Register from '../Register/Register'
 import { useDispatch, useSelector } from 'react-redux'
-import { actionGetOrder, actionGetOrdersByUser } from '../../redux/ordersActions'
+import { actionGetOrder } from '../../redux/ordersActions'
 import UserLogged from '../UserLogged/UserLogged'
 import { useCookies } from 'react-cookie';
 import Cart from '../UserLogged/Cart'
-import { actionSetVerified, actionVerifyCookies, actionSetCookieToStore, actionGetMe } from '../../redux/usersActions'
+import { actionSetVerified, actionVerifyCookies, actionSetCookieToStore, actionGetMe, actionSetModalLogin } from '../../redux/usersActions'
+import actionGetCategories from '../../redux/categoriesActions'
+
 
 const NavBar = () => {
 
     const [cookie, setCookie, removeCookie] = useCookies(['ttkk']);
     const dispatch = useDispatch()
-    const [modalLogin, setModalLogin] = useState(false)
+    const modalLogin = useSelector(store => store.usersReducer.modalLogin)
     const [modalRegister, setModalRegister] = useState(false)
     const idUser = useSelector(state => state.usersReducer.idUser)
     const level = useSelector(state => state.usersReducer.level)
     const verified = useSelector(state => state.usersReducer.verified)
     const loggedOut = useSelector(state => state.usersReducer.loggedOut)
+
+    
+
     const [google, setGoogle] = useState(true)
-    const [github , setGithub] = useState(true)
+    const [github, setGithub] = useState(true)
 
     useEffect(() => {
-        if(Object.keys(cookie).length <= 1) {
+        if (Object.keys(cookie).length <= 1) {
             dispatch(actionVerifyCookies(cookie))
         }
         else {
@@ -37,14 +42,15 @@ const NavBar = () => {
             return dispatch(actionGetOrder(cookie.idUser))
         }, 300);
         dispatch(actionSetCookieToStore(cookie))
+        dispatch(actionGetCategories())
     }, [])
     if (loggedOut) {
             removeCookie('idUser')
             removeCookie('level')
             // removeCookie('connect.sid')
-            setTimeout(() => {
-                window.location.reload()
-            }, 200);
+            // setTimeout(() => {
+            //     window.location.reload()
+            // }, 200);
     }
     if (verified) {
         setCookie('idUser', idUser, { path: '/' })
@@ -59,11 +65,10 @@ const NavBar = () => {
         setGithub(false)
         dispatch(actionGetMe())
     }
-    
+    const categories = useSelector(state => state.categoriesReducer.categories)
 
-    const modalLoginView = () => setModalLogin(!modalLogin);
+    const modalLoginView = () => dispatch(actionSetModalLogin(!modalLogin));
     const modalRegisterView = () => setModalRegister(!modalRegister);
-    const modalLoginClose = () => setModalLogin(false);
     const modalRegisterClose = () => setModalRegister(false)
     const ChangeModal = () => {
         modalLoginView()
@@ -74,20 +79,24 @@ const NavBar = () => {
             <div className='navContainer'>
                 <div className='logoContainer'>
                     <a href="/">
-                        <img className='imageLogo' src={Logo} alt='Logo'/>
+                        <img className='imageLogo' src={Logo} alt='Logo' />
                     </a>
                 </div>
                 <div className='routerContainer'>
-                    <div className='buttonsContainer'>
-                        <img className='casa'></img>
-                        <form action="/">
-                            <div>
-                                <button className='buttonProducts'>Home</button>
-                            </div>
-                        </form>
-                        <form action="/catalogue">
-                            <button className='buttonProducts'>Products</button>
-                        </form>
+                    <ul className="menu">
+                        <li><a className = 'buttonProducts' href="/">HOME</a></li>
+                        <li className="dropdownCategories">
+                            <a className = 'buttonProducts' href="/catalogue?filter=All categories">PRODUCTOS</a>
+                            <ul className="dropdownSubCat">
+                                {categories.map(category => {
+                                    return <li><a className='categoryDrop' href={"/catalogue?filter="+category.name}>{category.name}</a></li>
+                                })
+                                }
+                            </ul>
+                        </li>
+                        <li><a className = 'buttonProducts' href="/aboutUs">ACERCA DE NOSOTROS</a></li>
+                        </ul>
+                       
                     </div>
                     <div className='searchBar'>
                         <SearchBar />
@@ -114,14 +123,17 @@ const NavBar = () => {
                             </div>
                         )}
                     <Modal isOpen={modalLogin}>
-                        <Login modalLoginClose={modalLoginClose} ChangeModal={ChangeModal} setGoogle={setGoogle} setGithub={setGithub}  />
+                        <Login ChangeModal={ChangeModal} setGoogle={setGoogle} setGithub={setGithub}  />
                     </Modal>
                     <Modal isOpen={modalRegister}>
-                        <Register modalRegisterClose={modalRegisterClose} ChangeModal={ChangeModal} setGoogle={setGoogle} setGithub={setGithub}   />
+                        <Register modalRegisterClose={modalRegisterClose} ChangeModal={ChangeModal} setGoogle={setGoogle} setGithub={setGithub} />
                     </Modal>
                 </div>
+                <div className='footerContainer'>
+                © La Cosería, Grupo 3 webpart 02 - Henry
+                </div>
             </div>
-        </div>
+
     )
 }
 export default NavBar;

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SET_QUANTITY, UPDATE_ORDER, GET_ORDER_BY_ID, GET_ALL_ORDERS, ADD_TO_CART, END_CHECKOUT, SET_ORDER_CERRADA_TO_VIEW, SEND_DIRECCION_TO_DB, GET_DIRECCION } from "./constants";
+import { EMPTY_CART, SET_QUANTITY, UPDATE_ORDER, GET_ORDER_BY_ID, GET_ALL_ORDERS, ADD_TO_CART, END_CHECKOUT, SET_ORDER_CERRADA_TO_VIEW, SEND_DIRECCION_TO_DB, GET_DIRECCION, DELETE_DIRECCION, CANCELAR_ORDER } from "./constants";
 const url = "http://localhost:3000/";
 var qs = require('qs');
 axios.defaults.withCrendentails = true;
@@ -7,28 +7,52 @@ axios.defaults.withCrendentails = true;
 
 ///////////////////////////// Acciones de Direcciones
 
-export const actionSendDirectionToDB = ({direccion, idOrderUser}) => {
+export const actionDeleteDireccion = (idOrderUser) => {
+
     return (dispatch) => {
-            var data = qs.stringify({direccion, idOrderUser});
-            var config = {
-                withCredentials: true,
-                method: 'POST',
-                url: 'http://localhost:3000/order/setDireccion',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                data: data
-            };
-            axios(config)
-                .then((res) => {
-                    console.log('RESPUESTAAAA', res.data)
-                    dispatch({
-                        type: SEND_DIRECCION_TO_DB,
-                        payload: res.data
-                    })
-                }).catch(error => {
-                    console.log('ERROOOOOR', error)
+        var data = qs.stringify({ idOrderUser });
+        var config = {
+            withCredentials: true,
+            method: 'DELETE',
+            url: 'http://localhost:3000/order/deleteDireccion',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+        };
+        axios(config)
+            .then((res) => {
+                dispatch({
+                    type: DELETE_DIRECCION,
                 })
+            }).catch(error => {
+                console.log('ERROR', error)
+            })
+    }
+}
+
+export const actionSendDirectionToDB = ({ direccion, idOrderUser }) => {
+    return (dispatch) => {
+        var data = qs.stringify({ direccion, idOrderUser });
+        var config = {
+            withCredentials: true,
+            method: 'POST',
+            url: 'http://localhost:3000/order/setDireccion',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+        };
+        axios(config)
+            .then((res) => {
+
+                dispatch({
+                    type: SEND_DIRECCION_TO_DB,
+                    payload: res.data
+                })
+            }).catch(error => {
+                console.log('ERROR', error)
+            })
     }
 }
 
@@ -44,15 +68,14 @@ export const actionGetDirection = () => {
         };
         axios(config)
             .then((res) => {
-                console.log('RESPUESTAAAA', res.data)
                 dispatch({
                     type: GET_DIRECCION,
                     payload: res.data
                 })
             }).catch(error => {
-                console.log('ERROOOOOR', error)
+                console.log('ERROR', error)
             })
-}
+    }
 }
 
 export const actionSetOrderCerradaToView = () => {
@@ -75,14 +98,13 @@ export const actionSetOrderCerradaToView = () => {
     }
 }
 
-export const actionCheckOut = (cancelarEnvio, idOrderUser) => {
+export const actionCheckOut = (cancelarEnvio, idOrderUser, user) => {
     return (dispatch) => {
-        axios.post(url + 'order/checkout', {cancelarEnvio, idOrderUser}, { withCredentials: true }).then(res => {
+        axios.post(url + 'order/checkout', { cancelarEnvio, idOrderUser, user }, { withCredentials: true }).then(res => {
             dispatch({ type: END_CHECKOUT, payload: res.data })
-            //   window.location.href = res.data
         }).catch(error => {
-                console.log(error);
-            });
+            console.log(error);
+        });
     }
 }
 
@@ -94,13 +116,11 @@ export const actionUpdateOrder = (idUser) => {
     }
 }
 export const actionGetOrder = (idUser) => {
-    return async (dispatch) => {
-        await axios.get(url + 'order/' + idUser, { withCredentials: true }).then(res => {
+    return (dispatch) => {
+        axios.get(url + 'order/' + idUser, { withCredentials: true }).then(res => {
             dispatch({ type: GET_ORDER_BY_ID, payload: res.data })
-            return res.data
-        }).then((data) => {
-            if (data.products) {
-                const acum = data.products.reduce((acum, product) => {
+            if (res.data.products) {
+                const acum = res.data.products.reduce((acum, product) => {
                     return acum + product.Inter_Prod_Order.quantity
                 }, 0)
                 dispatch({ type: SET_QUANTITY, payload: acum })
@@ -135,5 +155,38 @@ export const actionAddToCart = (props) => {
         }).then(() => {
             return dispatch(actionGetOrder(props.idUser))
         })
+    }
+}
+
+export const actionEmptyCart = (idUser) => {
+    return (dispatch) => {
+        axios.delete(url + 'user/' + idUser + '/cart', { withCredentials: true }).then(() => {
+            dispatch(actionGetOrder(idUser))
+        }).catch(error => {
+            console.log('error', error)
+        })
+    }
+}
+
+export const actionCancelarOrden = (idOrder) => {
+    return (dispatch) => {
+        var data = qs.stringify({idOrder});
+        var config = {
+            withCredentials: true,
+            method: 'PUT',
+            url: 'http://localhost:3000/order/cancelOrder',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+        };
+        axios(config)
+            .then((res) => {
+                dispatch({
+                    type: CANCELAR_ORDER,
+                })
+            }).catch(error => {
+                console.log('ERROR', error)
+            })
     }
 }

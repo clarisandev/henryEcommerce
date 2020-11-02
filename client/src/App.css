@@ -89,3 +89,11 @@ p {
         margin: 0.4em auto;
     }
 }
+
+.Toastify__toast-container {
+  font-family: 'Poppins', sans-serif;
+}
+
+.Toastify__progress-bar {
+  background-color: #ffff;
+}

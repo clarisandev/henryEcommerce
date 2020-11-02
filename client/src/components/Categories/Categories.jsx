@@ -5,16 +5,17 @@ import FormModalEdit from './CategoriesComponents/FormModalEdit'
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Container, Modal, } from "reactstrap";
 import './Categories.css'
-import { connect } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import { actionGetCategories, actionPostCategory, actionUpdateCategory, actionDeleteCategory } from "../../redux/categoriesActions";
+import MenuUser from "../MyAccount/MenuUser";
 
-const Categories = (props) => {
-
+const Categories = () => {
+  const dispatch = useDispatch()
   useEffect(() => {
-    props.actionGetCategories()
+    dispatch(actionGetCategories())
   }, [])
 
-  const [categories, setCategories] = useState(props.categories)
+  const categories = useSelector(store => store.categoriesReducer.categories)
   const [currentCategory, setCurrentCategory] = useState()
   const [modalAdd, modalInsert] = useState(false)
   const modalAddView = () => modalInsert(!modalAdd);
@@ -24,28 +25,29 @@ const Categories = (props) => {
   const modalEditViewFalse = () => modalInsertEdit(false);
 
   const deleteCategory = category => {
-    props.actionDeleteCategory(category)
+    dispatch(actionDeleteCategory(category))
   }
   const editCategory = category => {
     setCurrentCategory(category)
     modalEditView()
   }
-  const addCategory = async (category) => {
-    props.actionPostCategory(category);
-    window.location.reload()
+  const addCategory = (category) => {
+    dispatch(actionPostCategory(category))
   }
   const updateCategory = (updatedCategory) => {
-    props.actionUpdateCategory(updatedCategory)
+    dispatch(actionUpdateCategory(updatedCategory))
   }
   
   return (
+    <div className='myAccountContainer' >
+    <MenuUser/>
     <div className='componentsContainer'>
       <Container>
-        <button id="buttonAdd" className='buttonLoginAndRegister' onClick={e => modalAddView()}> + </button>
+        <button id="buttonAdd" className='buttonAdd' onClick={e => modalAddView()}> AGREGAR CATEGORIA </button>
         <br />
         <br />
         <CategoryTable 
-        categories={props.categories} 
+        categories={categories} 
         deleteCategory={deleteCategory} 
         editCategory={editCategory} />
       </Container>
@@ -63,6 +65,7 @@ const Categories = (props) => {
         categories={categories} />
       </Modal>
     </div>
+    </div>
   )
 }
 
@@ -72,21 +75,6 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    actionGetCategories: () => {
-      dispatch(actionGetCategories())
-    },
-    actionPostCategory: (category) => {
-      dispatch(actionPostCategory(category))
-    },
-    actionUpdateCategory: (category) => {
-      dispatch(actionUpdateCategory(category))
-    },
-    actionDeleteCategory: (category) => {
-      dispatch(actionDeleteCategory(category))
-    }
-  }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Categories);
+
+export default Categories;

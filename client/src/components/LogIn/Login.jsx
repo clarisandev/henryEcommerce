@@ -2,22 +2,41 @@ import React, { useState } from "react";
 import { ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import "./Login.css";
 import { useDispatch, useSelector } from "react-redux";
-import { actionLogin } from "../../redux/usersActions";
+import { actionLogin, actionSetModalLogin } from "../../redux/usersActions";
 import { actionGetOrder } from "../../redux/ordersActions";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
+
 
 const Login = (props) => {
   const dispatch = useDispatch();
-  const { modalLoginClose, ChangeModal } = props;
+  const modalLogin = useSelector(store => store.usersReducer.modalLogin)
+  const { ChangeModal } = props;
   const [inputs, setInputs] = useState({});
   const idUser = useSelector((store) => store.usersReducer.idUser);
+
+  toast.configure()
+
   const handleChancla = () => {
-    dispatch(actionLogin({ ...inputs, idUser: idUser }));
-    modalLoginClose();
-    dispatch(actionGetOrder(idUser))
-    setTimeout(() => {
-      window.location.reload();
-    }, 200);
+
+    if (!inputs.email || !inputs.password) {
+      toast.error("Debe completar todos los datos", {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      dispatch(actionLogin({ ...inputs, idUser: idUser }));
+      modalLoginClose();
+    }
   };
+  const modalLoginClose = () => {
+    dispatch(actionSetModalLogin(!modalLogin))
+  }
   const handleInput = (e) => {
     const { type, value } = e.target;
     setInputs({
@@ -39,65 +58,52 @@ const Login = (props) => {
   return (
     <div className="loginContainer">
       <button className="closeButton" onClick={modalLoginClose}>
-        x
+        <i class="fas fa-times"></i>
       </button>
       <ModalHeader id="loginHeaderContainer">
         <div className="addProductTitle">Login </div>
       </ModalHeader>
       <ModalBody id="loginBodyContainer">
-        <input
-          className="standardInput"
-          id="email"
-          type="email"
-          placeholder="info@lacoseria.com"
-          onKeyPress={(e) => {
-            if (e.key === "Enter") {
-              document.getElementById("password").focus();
-            }
-          }}
-          onChange={handleInput}
-        />
-        <input
-          className="standardInput"
-          id="password"
-          type="password"
-          placeholder="··············"
-          onKeyPress={(e) => {
-            if (e.key === "Enter") {
-              handleChancla(e);
-            }
-          }}
-          onChange={handleInput}
-        />
-        <button
-          className="buttonLoginAndRegister"
-          onClick={(e) => {
-            handleChancla(e);
-          }}
-        >
-          LOGIN
+        <div className='input-icons'>
+          <i class="fa fa-user icon"></i>
+          <input
+            className="input-field "
+            id="email"
+            type="email"
+            placeholder="Email"
+            onKeyPress={(e) => {
+              if (e.key === "Enter") { document.getElementById("password").focus() }
+            }}
+            onChange={handleInput}
+          />
+        </div>
+        <div className='input-icons'>
+          <i class="fa fa-lock"></i>
+          <input
+            className="input-field "
+            id="password"
+            type="password"
+            placeholder="Password"
+            onKeyPress={(e) => { if (e.key === "Enter") { handleChancla(e) } }}
+            onChange={handleInput}
+          />
+        </div>
+        <button className="buttonLoginAndRegister" onClick={(e) => { handleChancla(e) }}>
+          Iniciar sesión
         </button>
         <div>
-          {" "}
-          Or do you{" "}
-          <a className="createAccount" href="/forgot">
-            forgot your password?
-          </a>{" "}
+          <a className="createAccount" href="/forgot"> ¿olvidaste tu contraseña? </a>
         </div>
       </ModalBody>
       <ModalFooter id="loginFooterContainer">
         <div className="LoginAccount">
           <a className="createComponent ">
             <div className="accountComponent">
-              <p className="lookingFor">Looking for </p>
-              <a className="createAccount" href="#" onClick={ChangeModal}>
-                create account
-              </a>
-              ?
+              <a className="createAccount" href="#" onClick={ChangeModal}> Crear cuenta </a>
             </div>
           </a>
           <div className="LoginAccountAux">
-            <p className="orLogin">or login with</p>
+            <p className="orLogin">Iniciar sesión con</p>
             <button onClick={ClicktoSign} className='btnGoogle' >
               <div class="google-btn">
                 <div class="google-icon-wrapper">

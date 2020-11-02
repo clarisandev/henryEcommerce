@@ -4,16 +4,29 @@ import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { useDispatch } from 'react-redux';
 import './Review.css'
 import StarRating from '../starRating/starRating';
-import { actionGetProduct, actionSetProduct } from '../../redux/productsActions';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 import { useHistory } from 'react-router';
 
 const PostReview = (props) => {
+
+    toast.configure()
+
     const { modalPostReviewClose, idProduct, reload} = props;
     const history = useHistory()
     const [rating] = useState(0)
     const [rev, setReview] = useState({});
     const dispatch = useDispatch();
     const handlePostReview = () => {
+        toast("Review Agregada", {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         dispatch(actionPostReview(rev))
         modalPostReviewClose()
         reload()
@@ -28,7 +41,9 @@ const PostReview = (props) => {
     }
     return (
         <div className='createOrEditContainer'>
-            <button className='closeButton' onClick={modalPostReviewClose}>x</button>
+            <button className='closeButton' onClick={modalPostReviewClose}>
+            <i class="fas fa-times"></i>
+            </button>
             <ModalHeader id='ModalHeaderContainer'>
                 <div className="addProductTitle">Add your Review</div>
             </ModalHeader>

@@ -1,14 +1,20 @@
 .products {
     display: flex;
-    justify-content: space-around;
     flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    background-color: #ffffff;
 }
 .ProductCard_Container {
     display: flex;
 }
+
 div.productCard.card {
     background-color: #F5F3BB;
     border-radius: 10px;
+}
+.productName{
+    white-space: pre-wrap;
 }
 .category {
     display: flex;
@@ -24,11 +30,21 @@ div.productCard.card {
     flex-direction: row;
     margin-top: 50px;
     margin-bottom: 50px;
-    padding-bottom: 10px;
     border: 0;
     justify-content: center;
 }
 button{
     background-color: transparent;
     border: 0px;
+}
+.NotFoundProd {
+    color: white;
+    display: flex;
+    align-content: center;
+    text-align: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+    text-transform: uppercase;
 }

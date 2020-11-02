@@ -67,7 +67,7 @@ server.get("/:idUser", (req, res, next) => {
 server.get("/history/:idUser", (req, res, next) => {
   Order.findAll({
     where: {
-      idUser: req.params.idUser,
+      idUser: req.user.idUser,
     },
     include: [
       {
@@ -75,8 +75,10 @@ server.get("/history/:idUser", (req, res, next) => {
         as: "products",
       },
     ],
+    order: ['createdAt','DESC']
   })
     .then((orders) => {
+      console.log(orders);
       res.send(orders);
     })
     .catch((error) => {
@@ -90,6 +92,7 @@ server.get("/search", isAdmin, (req, res, next) => {
         [Sequelize.Op.like]: "%" + req.query.query + "%",
       },
     },
+    order: ['createdAt','DESC']
   })
     .then((orders) => {
       res.send(orders);
@@ -105,6 +108,7 @@ server.get("/", (req, res, next) => {
         as: "products",
       },
     ],
+    order: ['createdAt','DESC']
   })
     .then((orders) => {
       res.send(orders);
@@ -112,36 +116,43 @@ server.get("/", (req, res, next) => {
     .catch(next);
 });
 
-server.post('/direccion', (req, res) => {
-    Order.findAll({
-        limit: 1,
+server.post("/direccion", (req, res) => {
+  Order.findAll({
+    limit: 1,
+    where: {
+      idUser: req.user.idUser,
+      status: "CERRADA",
+    },
+    order: [["createdAt", "DESC"]],
+  })
+    .then((order) => {
+      return Direccion.findOne({
         where: {
-          idUser: req.user.idUser,
-          status: "CERRADA",
+          idOrder: order[0].idOrder,
         },
-        order: [["createdAt", "DESC"]],
-      }).then(order => {
-          return Direccion.findOne({
-              where: {
-                  idOrder : order[0].idOrder
-              }
-          })
-      }).then(direccion => {
-          res.send(direccion)
-      })
-})
+      });
+    })
+    .then((direccion) => {
+      res.send(direccion);
+    });
+});
 
-server.get('/', (req, res, next) => {
-    Order.findAll({
-        where: {status: 'CERRADA'},
-        include: [{
-            model: Product,
-            as: 'products',
-        }]
-    }).then(orders => {
-        res.send(orders)
-    }).catch(next)
-})
+server.get("/", (req, res, next) => {
+  Order.findAll({
+    where: { status: "CERRADA" },
+    include: [
+      {
+        model: Product,
+        as: "products",
+      },
+    ],
+    order: ['createdAt','DESC']
+  })
+    .then((orders) => {
+      res.send(orders);
+    })
+    .catch(next);
+});
 /////////////////////////////////////////POST
 
 server.post("/cerrada", (req, res) => {
@@ -149,7 +160,7 @@ server.post("/cerrada", (req, res) => {
     limit: 1,
     where: {
       idUser: req.user.idUser,
-      status: "CERRADA",
+      status: 'CON ENVIO' || 'CON RETIRO',
     },
     order: [["createdAt", "DESC"]],
     include: [
@@ -177,6 +188,7 @@ server.post("/", (req, res, next) => {
 
 server.post("/setDireccion", (req, res) => {
   const {
+    referencia,
     provincia,
     ciudad,
     calle,
@@ -186,7 +198,9 @@ server.post("/setDireccion", (req, res) => {
     depto,
     CP,
   } = req.body.direccion;
+
   Direccion.create({
+    referencia,
     provincia,
     ciudad,
     calle,
@@ -196,6 +210,7 @@ server.post("/setDireccion", (req, res) => {
     depto,
     CP,
     idOrder: req.body.idOrderUser,
+    idUser: req.user.idUser,
   })
     .then((direccion) => {
       res.send(direccion);
@@ -204,13 +219,23 @@ server.post("/setDireccion", (req, res) => {
       console.log(error);
     });
 });
+
+server.delete("/deleteDireccion", (req, res) => {
+  // req.body --> idOrderUser
+  Direccion.destroy({
+    where: {
+      idOrder: req.body.idOrderUser,
+    },
+  }).then(() => {
+    res.send("Direccion Eliminada");
+  });
+});
 ///////////////////////////////////////////////////////////////////////////PUT
 
 /////////////////////////////////////////////////////////////////////////// MERCADOPAGO
 server.post("/checkout", async (req, res, next) => {
   // SI REQ.BODY TRAE 'cancelarEnvio' FALSE => NO HAY ENVIO ; TRUE => HAY ENVIO
   const { cancelarEnvio } = req.body;
-
   const allProdUser = await Order.findOne({
     where: {
       idUser: req.user.idUser,
@@ -222,9 +247,25 @@ server.post("/checkout", async (req, res, next) => {
         where: {
           idOrder: order.idOrder,
         },
+        order: ['createdAt','DESC']
       });
     })
     .catch(next);
+
+  //////// -- RESTAR STOCK COMPRA DE STOCK TOTAL
+
+  allProdUser.map(prod => {
+    Product.findOne({
+      where:{
+        idProduct: prod.idProduct
+      }
+    }).then(product => {
+      return product.update({
+        ...product,
+        stock: product.stock - prod.quantity
+      })
+    })
+  })
 
   //////// -- PASAR ORDEN A CERRADA
 
@@ -233,12 +274,18 @@ server.post("/checkout", async (req, res, next) => {
       idOrder: req.body.idOrderUser,
     },
   }).then((order) => {
-    return order.update({
-      ...order,
-      status: "CERRADA",
-    });
+    if (cancelarEnvio) {
+      return order.update({
+        ...order,
+        status: "CON ENVIO",
+      });
+    } else {
+      return order.update({
+        ...order,
+        status: "CON RETIRO",
+      });
+    }
   });
-
   //////// -- CREARLE NUEVA ORDEN CREADA
 
   User.findOne({
@@ -256,7 +303,7 @@ server.post("/checkout", async (req, res, next) => {
     access_token:
       "TEST-3269061119976940-092823-2fdadf82afd73900c02041d6888f47be-166321688",
   });
-
+    
   // Crea un objeto de preferencia
   const preference = {
     items: allProdUser.map((relacion_product_order) => {
@@ -270,6 +317,7 @@ server.post("/checkout", async (req, res, next) => {
     auto_return: "approved",
     back_urls: {
       success: "http://localhost:3001/pagoSuccess",
+      failure: "http://localhost:3001/pagoFailure",
     },
     shipments: {},
   };
@@ -289,7 +337,23 @@ server.post("/checkout", async (req, res, next) => {
     .catch(function (error) {
       console.log(error);
     });
-});
+  }
+);
+
+
+server.put('/cancelOrder', (req, res) => {
+  Order.findOne({
+    where:{
+      idOrder: req.body.idOrder
+    }
+  }).then( order => {
+    order.update({
+      ...order,
+      status: 'CANCELADA'
+    })
+  })
+})
+
 
 /////////////////////////////////DEV
 

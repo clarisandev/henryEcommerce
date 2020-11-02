@@ -14,8 +14,13 @@ import {
 } from "reactstrap";
 import './ModalAddProduct.css'
 import SelectImage from '../../SelectImage/SelectImage'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 const ModalAddProduct = (props) => {
+
+    toast.configure()
+
     const { products, addProduct, modalCloseAdd, categories } = props
     const initialState = {
         name: '',
@@ -23,7 +28,7 @@ const ModalAddProduct = (props) => {
         precio: '',
         stock: '',
         images: '',
-        categories: 'Choose Category',
+        categories: 'seleccionar',
         rating: 1
     };
     const [product, setProduct] = useState(initialState);
@@ -40,7 +45,15 @@ const ModalAddProduct = (props) => {
     const [content, setContent] = useState('');
     const handleChangeDescription = (content, editor) => {
         if (content.length > 255) {
-            window.alert('Maximo 255 caracteres. Si lo bueno es breve, es doblemente bueno.')
+            toast.error("Maximo 255 caracteres", {
+                position: "top-center",
+                autoClose: 2500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
         content = content.replace('<p>', "")
         content = content.replace('</p>', '')
@@ -73,7 +86,7 @@ const ModalAddProduct = (props) => {
     return (
         <div className='addProdContainer'>
             <ModalHeader>
-                <div>Add product</div>
+                <div>AGREGAR PRODUCTO</div>
             </ModalHeader>
             <ModalBody>
                 <FormGroup className='uploadImage' style={{ display: "flex", justifyContent: 'center' }}>
@@ -82,15 +95,16 @@ const ModalAddProduct = (props) => {
                     </ListGroup>
                 </FormGroup>
                 <FormGroup className='productName'>
-                    <label className='productDetail'>Product name: </label>
-                    <input className='inputName'
+                    <label className='productDetailName'>Nombre </label>
+                    <input className='inputMenuCrud'
                         name='name'
+                        placeholder='NOMBRE'
                         type='text'
                         onChange={handleChange}
                     />
                 </FormGroup>
                 <FormGroup>
-                    <label className='productDetail'>Description: </label>
+                    <label className='productDetailMenuCrud'>Descripcion </label>
                     <form>
                         <Editor id='productEditor'
                             apiKey='efxwg61t4p8hkjnu4a5t9y0ah1jo0kf445jywqtnqljny3fy'
@@ -105,26 +119,28 @@ const ModalAddProduct = (props) => {
                 </FormGroup>
                 <ListGroup horizontal className="propertyContainer">
                     <FormGroup className="priceContainer">
-                        <label className='productDetail'>Price: </label>
+                        <label className='productDetailMenuCrud'>Precio </label>
                         <input
                             className='form-control'
                             name='precio'
+                            placeholder= '$00.00'
                             type='number'
                             onChange={handleChange}
                         />
                     </FormGroup>
                     <FormGroup className="stockContainer">
-                        <label className='productDetail' >Stock: </label>
+                        <label className='productDetailMenuCrud' >Stock </label>
                         <input
                             className='form-control'
                             name='stock'
+                            placeholder= '0'
                             type='number'
                             onChange={handleChange}
                             value={product.stock}
                         />
                     </FormGroup>
                     <FormGroup className="categoriesContainer">
-                        <label className='productDetail'>Categories: </label>
+                        <label className='productDetailMenuCrud'>Categoria </label>
                         <Dropdown className='dropdownCat' isOpen={dropdownOpen} toggle={toggle}>
                             <DropdownToggle className='dropdownCat' caret>
                                 {product.categories}
@@ -145,14 +161,31 @@ const ModalAddProduct = (props) => {
                 <Button className='buttonAdd'
                     onClick={e => {
                         e.preventDefault();
-                        if (!product.name || !product.description || !product.precio || !product.stock) return window.alert('Empty input')
-                        if (products.find(element => element.name.toUpperCase() === product.name.toUpperCase())) return window.alert('This name already been used')
+                        if (!product.name || !product.description || !product.precio || !product.stock) return toast.error("Todos los campos son obligatorios", {
+                            position: "top-center",
+                            autoClose: 2500,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                        if (products.find(element => element.name.toUpperCase() === product.name.toUpperCase())) return toast.error("Este producto ya fue creado", {
+                            position: "top-center",
+                            autoClose: 2500,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                        
                         addProduct(product);
                         setProduct(initialState)
                         modalCloseAdd();
                     }}
-                > Submit</Button>
-                <Button className='buttonExit' onClick={e => modalCloseAdd()}>Exit</Button>
+                > AGREGAR </Button>
+                <Button className='buttonExit' onClick={e => modalCloseAdd()}> SALIR </Button>
             </ModalFooter>
         </div>
     )
