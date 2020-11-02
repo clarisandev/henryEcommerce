@@ -6,11 +6,16 @@ const {
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('categories', {
+<<<<<<< HEAD
+    idCategory:{
+=======
     idCategory: {
+>>>>>>> dev_front
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-      allowNull: false
+      allowNull: false,
+      autoIncrement: true
     },
     name: {
       type: DataTypes.STRING,

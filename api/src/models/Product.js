@@ -9,6 +9,11 @@ module.exports = (sequelize) => {
       autoIncrement: true,
       primaryKey: true,
       notNull: true,
+<<<<<<< HEAD
+      autoIncrement: true
+
+=======
+>>>>>>> dev_front
     },
     name: {
       type: DataTypes.STRING,

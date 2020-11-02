@@ -49,6 +49,15 @@ server.post('/create', isAdmin, (req, res, next) => {
     }).then(res.send(req.body))
         .catch(next);
 })
+//Borro una categoria
+server.delete('/products/category/:id', (req, res, next) => {
+	Inter_Cat_Prod.destroy({
+		where: {
+			idCategorie: req.body.idCategory
+		}
+	}).then(res.send(req.body))
+        .catch(next)
+})
 /////////////////////////////////////////////////////////////////////////////////////////////// DELETE
 server.delete('/:id', isAdmin, (req, res, next) => {
     Categories.destroy({
