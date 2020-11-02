@@ -1,0 +1,28 @@
+.products {
+    display: flex;
+    justify-content: space-evenly;
+    height: fit-content;
+    width: auto;
+}
+/* 
+.btn.btn-secondary {
+    border-style:'none';
+    width: '300px'
+} */
+.div.productCard.card {
+    background-color: #F5F3BB;
+}
+
+.categoryImage {
+    width: 100%;
+    border-color: black;
+    width: inherit
+}
+
+
+.categories { 
+    display: flex;
+    border-style:'none';
+    width: 100%;
+    justify-content: center;
+}

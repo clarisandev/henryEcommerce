@@ -1,0 +1,32 @@
+.productCard {
+    border: 5px solid #DFA06E;
+    background-color: #F5F3BB;
+    max-width: 300px;
+    margin: 5px;
+    content: 10px;
+    align-items: center;
+}
+.content {
+    width: 90%;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+}
+.image.card-img {
+    height: 125px;
+    width: auto;
+    margin: 3px;
+    align-self: center;
+    margin-top: 5px
+}
+.productName {
+    display: flex;
+    justify-content: center
+}
+.description{
+    font-style:italic
+}
+.price {
+    font-weight: bold;
+    float: right
+}

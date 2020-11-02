@@ -2,6 +2,13 @@
   text-align: center;
 }
 
+html, 
+body, 
+#root, 
+#root>div {
+  height: 100%
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -35,4 +42,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+input[type="radio"]{
+  display: none;
 }
