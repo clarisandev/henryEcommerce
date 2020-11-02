@@ -16,16 +16,20 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     precio: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    rating: {
-      type: DataTypes.INTEGER,
+
+      type: DataTypes.NUMBER,
       allowNull: false
     },
-    stock: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-     }
+    stock: { 
+      type: DataTypes.BOOLEAN
+     },
+    categorias: {
+      type: DataTypes.JSON,
+      allowNull: false
+    },
+    image: {
+      type: DataTypes.JSON,
+      allowNull: false
+    }
   });
 };
