@@ -1,17 +1,13 @@
 import React from 'react'
-import { Button } from 'reactstrap'
 import './Category.css'
-
-const Category = ( props ) => {
-
-    const { name , productsFilter } = props
-
+const Category = (props) => {
+    const { name, productsFilter } = props
     return (
         <div>
-            <Button className = 'categoryImage' 
-            onClick = { e => productsFilter(name) } >{name}</Button>
+            <button class="categoryButton" onClick={e => productsFilter(name)}>
+                <span>{name}</span>
+            </button>
         </div>
     )
 }
-
 export default Category;

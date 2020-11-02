@@ -1,12 +1,78 @@
-td {
-    height: 70px;
+.tableContainer{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: 150px;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    margin-bottom: 15px;
 }
-img{
-    height: 60px;
+
+/* ---------------- Image ---------------- */
+.imageContainer{
+    width: 15%;
+    height: 135px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-.table td,
-tr,
-thead{
-    border-top: 0px;
-    vertical-align: middle;
+.productImage{
+    display:block;
+    height: 100px;
+    width: 100px;
+    border-radius: 5px;
 }
+
+/* ---------------- Name ---------------- */
+.nameContainer{
+    width: 15%;
+    height: 135px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.productName{
+    font-size: 25px;
+    font-weight: bold;
+}
+
+/* ---------------- Price ---------------- */
+.priceContainer{
+    width: 15%;
+    height: 135px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ---------------- Stock ---------------- */
+.stockContainer{
+    width: 15%;
+    height: 135px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ---------------- Categories ---------------- */
+.categoriesContainer{
+    width: 15%;
+    height: 135px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ---------------- Buttons ---------------- */
+
+.buttonContainer{
+    width: 15%;
+    height: 135px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+

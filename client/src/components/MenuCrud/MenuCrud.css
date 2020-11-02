@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,800,900');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+.table thead th,
+.table th {
+    border: 0px;
+    display: flex;
+    flex-direction: row;
+    display: flex;
+    width: -webkit-fill-available;
+}
+#modalAdd {
+    display: flex;
+    flex-direction: column;
+    color: #ffffff;
+    width: 500px;
+    height: 500px;
+    background-color: rgba(222, 245, 209, 0.25);
+    backdrop-filter: blur(7px);    
+    border-radius: 15px;
+    font-family:'Roboto', sans-serif;
+    font-weight:300;
+}
+

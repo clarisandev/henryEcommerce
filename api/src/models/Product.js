@@ -1,4 +1,7 @@
-const { DataTypes, INTEGER } = require('sequelize')
+const {
+  DataTypes,
+  INTEGER
+} = require('sequelize')
 module.exports = (sequelize) => {
   sequelize.define('product', {
     idProduct: {
@@ -16,20 +19,20 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     precio: {
-
-      type: DataTypes.NUMBER,
+      type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    rating: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    stock: { 
-      type: DataTypes.BOOLEAN
-     },
-    categorias: {
-      type: DataTypes.JSON,
-      allowNull: false
+    stock: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
-    image: {
-      type: DataTypes.JSON,
-      allowNull: false
+    images: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   });
 };

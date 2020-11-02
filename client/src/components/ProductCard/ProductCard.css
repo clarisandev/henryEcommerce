@@ -1,32 +1,62 @@
-.productCard {
-    border: 5px solid #DFA06E;
-    background-color: #F5F3BB;
-    max-width: 300px;
-    margin: 5px;
-    content: 10px;
-    align-items: center;
-}
-.content {
-    width: 90%;
-    justify-content: center;
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,800,900');
+.ProductCard_Container {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    background-color: #ffffff;
+    justify-content: space-around;
+    border-radius: 20px;
+    width: 600px;
+    height: 200px;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 5px;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.50);
 }
-.image.card-img {
+.ProductDescription{
+    display: flex;
+}
+.ProductDataContainer {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: "row";
+}
+.imageCard{
     height: 125px;
     width: auto;
     margin: 3px;
+    padding: 0px 30px 0px 0px;
     align-self: center;
+    justify-self: center;
     margin-top: 5px
 }
 .productName {
     display: flex;
-    justify-content: center
+    justify-content: flex-start;
 }
-.description{
-    font-style:italic
-}
-.price {
+.productPrice {
     font-weight: bold;
-    float: right
+    font-size: 30px;
+    float: right;
+    margin-right: -10px;
+    align-self: center;
+}
+.productCard.card{
+    margin: 10px;
+}
+.contentCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.productStock {
+    font-size: 12px;
+    align-content: center;
+    display: flex;
+}
+.productDiv {
+    display: flex;
+    flex-direction: column;
 }

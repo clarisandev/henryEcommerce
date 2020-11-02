@@ -2,70 +2,75 @@ import React, { useState } from 'react'
 import ProductCard from '../ProductCard/ProductCard'
 import './Catalogue.css'
 import Category from './Category'
-import { Button } from 'reactstrap'
-import { actionGetProducts,actionGetProductsByCategory } from '../../redux/productsActions'
+import { actionGetProducts, actionGetProductsByCategory } from '../../redux/productsActions'
 import { actionGetCategories } from '../../redux/categoriesActions'
 import { useEffect } from 'react'
-import { connect } from 'react-redux'
-
-
-const Catalogue = (props) => {
+import { useDispatch, useSelector } from 'react-redux'
+const Catalogue = () => {
+    const dispatch = useDispatch()
     useEffect(() => {
-        if (props.categories.length < 1) {
-            props.actionGetCategories()
-        }
-    })
-
-
-
+        dispatch(actionGetCategories())
+        dispatch(actionGetProducts())
+    }, [])
+    const [pageLimits, setPageLimits] = useState({ min: 0, max: 5 });
+    const categories = useSelector(state => state.categoriesReducer.categories)
+    const products = useSelector(store => store.productsReducer.products)
     const productsFilter = (e) => {
-        if (e !== 'none') {
-            props.actionGetProductsByCategory(e)
-        }else {
-            props.actionGetProducts()
+        if (e !== 'All categories') {
+            dispatch(actionGetProductsByCategory(e))
+        } else {
+            dispatch(actionGetProducts())
         }
     }
-    const { products, categories } = props
+    if (categories.length === 0) {
+        return (
+            <div>
+                <div className='categories'>
+                    <h3><b>Products not found</b></h3>
+                </div>
+            </div>
+        )
+    }
     return (
         <div>
-            <div className='categories'>
+            <div className='categories_menu'>
                 {categories.map(category => {
-                    return <Category className='categoryImage'
-                        name={category.name} productsFilter={productsFilter} />
-            })}
-                <Button onClick={e => productsFilter('none')}>All Products</Button>
+                    return <Category
+                        className='categoryImage'
+                        name={category.name}
+                        productsFilter={productsFilter} />
+                })
+                }
+                <Category className='categoryImage'
+                    name={"All categories"} productsFilter={productsFilter} />
             </div>
-            <div className='products'> {
-            props.products.map(product => {
-                if (product.stock > 0){
-                return <ProductCard className='productCard' name={product.name} description={product.description} price={product.precio}
-                // image = {product.image}
-                />}
-            })
+            <div className='products' > {
+                products.map((product, index) => {
+                    if (product.stock > 0 && index >= pageLimits.min && index <= pageLimits.max) {
+                        return <ProductCard className='productCard'
+                            name={product.name}
+                            description={product.description}
+                            price={product.precio}
+                            images={product.images}
+                            idProduct={product.idProduct}
+                            stock={product.stock} />
+                    }
+                })
             }
+            </div>
+            <div className='PagePrevNext'>
+                <button className='categoryButton' onClick={() => {
+                    if (pageLimits.min > 1) {
+                        setPageLimits({ min: pageLimits.min - 5, max: pageLimits.max - 5 })
+                    }
+                }}> {'<'} </button>
+                <button className='categoryButton' onClick={() => {
+                    if (pageLimits.max < products.length) {
+                        setPageLimits({ min: pageLimits.min + 5, max: pageLimits.max + 5 })
+                    }
+                }}> {'>'} </button>
             </div>
         </div>
     )
 }
-
-const mapStateToProps = (state) => {
-    return {
-        products: state.productsReducer.products,
-        categories: state.categoriesReducer.categories,
-        loading: state.productsReducer.loading,
-    }
-}
-const mapDispatchToProps = (dispatch) => {
-    return {
-        actionGetProducts: () => {
-            dispatch(actionGetProducts())
-        },
-        actionGetCategories: () => {
-            dispatch(actionGetCategories())
-        },
-        actionGetProductsByCategory: (categoryName) => {
-            dispatch(actionGetProductsByCategory(categoryName))
-        }
-    }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Catalogue);
+export default Catalogue;

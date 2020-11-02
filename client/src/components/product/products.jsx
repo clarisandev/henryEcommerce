@@ -1,75 +1,120 @@
-import React from 'react';
-import StarRating from '../starRating/starRating'
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import './products.css';
+import { Modal } from 'reactstrap'
+import Review from '../Review/Review'
+import { actionDeleteReview, actionGetReviews } from '../../redux/reviewsAction';
+import EditReview from '../Review/EditReview'
+import PostReview from '../Review/PostReview'
+import ButtonAddToCart from '../ButtonAddToCart/ButtonAddToCart';
+import { actionGetProduct, actionSetProduct } from '../../redux/productsActions';
+import { useHistory } from 'react-router';
 
-import logo from './images/1.jpeg'
-import logo1 from './images/2.jpeg'
-import logo2 from './images/3.jpeg'
-import logo3 from './images/4.jpeg'
+function Products() {
+    const dispatch = useDispatch()
+    const history = useHistory()
+    useEffect(() => {
+        dispatch(actionGetReviews(idProduct))
+    }, [])
+    const { idProduct, name, description, precio, images, stock } = useSelector(store => store.productsReducer.product)
 
-function Products(props) {
+    const [modalEditReview, setModalEditReview] = useState(false)
+    const [modalPostReview, setModalPostReview] = useState(false)
 
-    const { title, description, price, stock } = props;
-    const setStock = 0
+    const modalEditReviewView = () => setModalEditReview(!modalEditReview);
+    const modalPostReviewView = () => setModalPostReview(!modalPostReview);
+
+    const modalEditReviewClose = () => {
+        setModalEditReview(false)
+        dispatch(actionGetReviews(idProduct))
+    };
+    const modalPostReviewClose = () => {
+        setModalPostReview(false)
+        dispatch(actionGetReviews(idProduct))
+    };
+    const user = useSelector(state => state.usersReducer.idUser)
+    const reviews = useSelector(state => state.reviewsReducer.reviews)
+    const review = reviews.find(rev => rev.idUser === user)
+    const reload = () => {
+        setTimeout(() => {
+            return dispatch(actionGetProduct(idProduct))
+        }, 25);
+        setTimeout(() => {
+            dispatch(actionGetReviews(idProduct))
+        }, 100);
+        setTimeout(() => {
+            dispatch(actionSetProduct({ name, precio: precio, description, idProduct, images, stock }))
+        }, 150);
+        setTimeout(() => {
+            return history.push('/productDetail')
+        }, 250)
+    }
+    const deleteReview = () => {
+        const data = { idProduct: idProduct, idReview: review.idReview }
+        dispatch(actionDeleteReview(data))
+        reload()
+    }
+
+    function test() {
+        return { __html: description }
+    }
+    const reviewCreateorEdit = () => {
+        if (review) {
+            return (
+                <div className='reviewButtonsContainer'>
+                    <button className='EditReview' onClick={e => modalEditReviewView()}>Editar Review</button>
+                    <button className='EditReview' onClick={deleteReview}>Eliminar Review</button>
+                </div>)
+        }
+        else {
+            return <button className='CreateReview' onClick={e => modalPostReviewView()}> Crear Review</button>
+        }
+
+    }
 
     return (
-
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
-
-            <div class="card mb-3" style={{ display: 'flex', alignContent: 'center', width: "1500px", height: 'auto' }}>
-                <div class="row no-gutters">
-                    <div class="col-md-8">
-                        <img src={logo} class="card-img" alt="..." style={{ marginBottom: '5px' }} />
-                        <div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel" >
-                            <div class="carousel-inner" >
-                                <div class="carousel-item active">
-                                    <img src={logo1} class="d-block w-100" alt="..." style={{ height: '400px' }} />
-                                </div>
-                                <div class="carousel-item">
-                                    <img src={logo2} class="d-block w-100" alt="..." style={{ height: '400px' }} />
-                                </div>
-                                <div class="carousel-item">
-                                    <img src={logo3} class="d-block w-100" alt="..." style={{ height: '400px' }} />
-                                </div>
-                            </div>
-                            <a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                            <a class="carousel-control-next" href="#carouselExampleFade" role="button" data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </div>
+        <div>
+            <body>
+                <div className='prodCard'>
+                    <div id='hover-img'>
+                        <img className="img-fluid" src={images} alt="..." />
                     </div>
-                    <div class="col-md-4">
-                        <div class="card-body">
-                            <h5 class="card-title">{title}</h5>
-                            <h4>{price}</h4>
-                            <h4>{stock}</h4>
-                            <hr />
-
-                            <p class="card-text">
-                                {description}
-                            </p>
-                            <hr />
-
-                            <div style={{ height: '450px' }}>
-
-                                < StarRating />
-
-                                {/* Espacio para Rating Stars */}
+                    <div className='prodComp1'>
+                        <div className='prodComp2'>
+                            <div className='TitlesContainer'>
+                                <h1 className='prodName'>{name}</h1>
+                                <div className='prodDescription' dangerouslySetInnerHTML={test()} />
                             </div>
-                            <div >
-                                <button type="button" class="btn btn-success" style={{ height: '100px', borderRadius: '15px' }} onClick={setStock}>Anadir al Carrito</button>
-                                {/* Setea el stock */}
+                            <Review />
+                            <div>
+                                {reviewCreateorEdit()}
+                            </div>
+                            <Modal isOpen={modalEditReview}>
+                                <EditReview modalEditReviewClose={modalEditReviewClose} reload={reload} review={review} idProduct={idProduct} />
+                            </Modal>
+                            <Modal isOpen={modalPostReview}>
+                                <PostReview modalPostReviewClose={modalPostReviewClose} reload={reload} idProduct={idProduct} />
+                            </Modal>
+                        </div>
+                        <div className='prodComp3'>
+                            <div className='priceAndStockContainer'>
+                                <span className='prodPrice'>${precio} </span>
+                                <p className='prodStock'>Stock: {stock} unidades</p>
+                            </div>
+                            <div className='buttons'>
+                                <ButtonAddToCart datos={{ idProduct: idProduct, quantity: 1, price: precio }} />
+                                <button className='buyProd'>Comprar</button>
+                                <div className='conteiner-star'>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </body>
         </div>
     )
 }
+
 
 
 export default Products;

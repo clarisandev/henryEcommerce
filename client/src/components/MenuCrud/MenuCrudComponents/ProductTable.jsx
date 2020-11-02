@@ -1,46 +1,39 @@
 import React from 'react';
-import { Table, Button } from 'reactstrap';
+import { useDispatch } from 'react-redux';
+import { actionGetProduct } from '../../../redux/productsActions';
 import './ProductTable.css'
 
 const ProductTable = (props) => {
-
     const { products, editProduct, deleteProduct } = props;
-
+    const dispatch = useDispatch()
     return (
-        <Table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Price</th>
-                    <th>Stock</th>
-                    <th>Images</th>
-                    <th>Categories</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                { products.length > 0 ? (
-                    products.map(product => (
-                        <tr key = {product.id}>
-                            <td>{product.name}</td>
-                            <td > <div dangerouslySetInnerHTML={{ __html: product.description }} /></td>
-                            <td>{'$ '}{product.precio}</td>
-                            <td>{product.stock}</td>
-                            <td> <img src= {product.images}></img> </td>
-                            <td> {product.categories} </td>
-                            <td className= 'buttons'>
-                                <Button color = 'primary' onClick = {e => editProduct(product)}>Edit</Button> {'  '}
-                                <Button color = 'danger' onClick = {e => deleteProduct(product.idProduct)}>Delete</Button>
-                            </td>
-                        </tr>
-                    ))):(
-                        <tr>
-                            <td>No productos</td>
-                        </tr>
-                    )}
-            </tbody>
-        </Table>
+        products.length > 0 ? (
+            products.map(product => (
+                <div className="tableContainer">
+                    <div className="imageContainer">
+                        <img className="productImage" src={product.images} alt="Product"></img>
+                    </div>
+                    <div className="nameContainer">
+                        <span className="productName">{product.name}</span>
+                    </div>
+                    <div className="priceContainer">
+                        <span>$ {product.precio}</span>
+                    </div>
+                    <div className="stockContainer">
+                        <span>{product.stock} u.</span>
+                    </div>
+                    <div className="buttonContainer">
+                        <button className='buttonEdit' onClick={e => {
+                            dispatch(actionGetProduct(product.idProduct))
+                            editProduct()
+                        }}>Edit</button> {'  '}
+                        <button className='buttonEdit' onClick={e => deleteProduct(product.idProduct)}>Delete</button>
+                    </div>
+                </div>
+            ))
+        ) : (
+                <span>No Products</span>
+            )
     )
 }
 

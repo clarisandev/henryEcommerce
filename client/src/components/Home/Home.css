@@ -3,15 +3,17 @@
     display: flex;
     font-family: 'Abril Fatface', cursive;
     font-size: 200px;
+    text-shadow: 5px -5px teal;
 }
 .Home {
-    background-color: #86BA90;
     display: flex;
     margin: 0px;
     align-self: center;
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    margin-top: 100px;
+    color: #ffffff;
 }
 .ButtonsLocos{
     display: flex;
@@ -41,3 +43,5 @@ a.nounderline:link{
     flex-direction: column;
     align-items: center;
 }
+
+

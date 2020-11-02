@@ -1,25 +1,45 @@
-import React, { useState } from 'react'
-// import { Button } from 'reactstrap'
+import React from 'react'
 import './SearchBar.css'
+import { connect, useDispatch } from 'react-redux'
+import { actionGetProductsBySearchTerm } from '../../redux/productsActions'
+import { useHistory, withRouter } from 'react-router'
 
+function SearchBarr() {
 
+    const dispatch = useDispatch()
+    const history = useHistory()
+    const searchFunction = (value) => {
+        dispatch(actionGetProductsBySearchTerm(value))
+        history.push('/search')
+    }
 
-export default function SearchBar() {
-
-    const [search, setSearch] = useState()
-
-    // const handleChange = (e) => {
-    //     const { name, value } = e.target
-    // }
-
-    return (<div>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
-        <div class='search-box'>
-            <input class="search-text" type="text" placeholder="¿Que estas buscando?"/>
-                <a href="#" class="search-btn">
-                    <i class="fas fa-search"></i>
+    return (
+        <div>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossOrigin="anonymous" />
+            <div className='search-box'>
+                <input className="search-text" type="text" placeholder="¿Que estas buscando?" onKeyPress={e => {
+                    if (e.key === 'Enter') {
+                        searchFunction(e.target.value)
+                    }
+                }} />
+                <a href="/Search" className="search-btn">
+                    <i className="fas fa-search"></i>
                 </a>
-    
-  </div>
-        </div>)
+            </div>
+        </div>
+    )
 }
+const mapStateToProps = (state) => {
+    return {
+        products: state.productsReducer.products,
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        actionGetProductsBySearchTerm: (term) => {
+            dispatch(actionGetProductsBySearchTerm(term))
+        }
+    }
+}
+const SearchBar = withRouter(SearchBarr)
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);
