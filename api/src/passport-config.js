@@ -3,6 +3,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy
 const GithubStrategy = require("passport-github").Strategy;
 
 const bcrypt = require('bcrypt');
+const Sequelize = require("sequelize");
 const {
   User,
   Order,
@@ -17,6 +18,8 @@ function initialize(passport) {
       where: {
         email: email
       }
+    }).catch(() => {
+      return null
     })
     ///////////////////////////////// In case the user doesnt exist
     if (user == null) {
@@ -27,35 +30,28 @@ function initialize(passport) {
     ///////////////////////////////// In case the user exist and test the password
     try {
       if (await bcrypt.compare(password, user.password)) {
-        const orderUserLogin = await User.findOne({
+        const orderUserLogin = await Order.findOne({
           where: {
-            email: email
+            idUser: user.idUser,
+            [Sequelize.Op.or]: [{
+              status: 'CREADA'
+          }, {
+              status: 'CARRITO'
+          }]
           }
-        }).then(user => {
-          return Order.findOne({
-            where: {
-              idUser: user.idUser
-            }
-          })
         })
         const orderGuest = await Order.findOne({
           where: {
             idUser: idUser
           }
         })
-        Order.findOne({
+        Inter_Prod_Order.findAll({
           where: {
-            idUser: idUser
+            idOrder: orderGuest.idOrder
           }
-        }).then(order => {
-          return Inter_Prod_Order.findAll({
-            where: {
-              idOrder: order.idOrder
-            }
-          })
         }).then(inters => {
           inters.map(inter => {
-            const interQuantity = inter.quantity
+            const interQuantityGuest = inter.quantity
             Inter_Prod_Order.findOne({
               where: {
                 idProduct: inter.idProduct,
@@ -64,7 +60,8 @@ function initialize(passport) {
             }).then(inter => {
               return inter.update({
                 ...inter,
-                quantity: inter.quantity + interQuantity
+                quantity: inter.quantity + interQuantityGuest,
+                idOrder: orderUserLogin.idOrder
               })
             }).catch(() => {
               return Inter_Prod_Order.create({
@@ -113,7 +110,8 @@ function initialize(passport) {
           name: profile.displayName,
           email: profile.emails[0].value,
           password: hashedPassword,
-          level: 'user'
+          level: 'user',
+          img: profile.photos[0].value
         }).then(user => {
           console.log(user)
           Order.create({
@@ -152,6 +150,7 @@ function initialize(passport) {
   ));
 
   const authenticateUserGitHub = async (accessToken, refreshToken, profile, done) => {
+    console.log('github', profile)
     const hashedPassword = await bcrypt.hash('passwordGitHubAccount', 10)
     User.findOne({
       where: {
@@ -159,12 +158,24 @@ function initialize(passport) {
       }
     }).then(user => {
       if (!user) {
-        User.create({
-          name: profile._json.name,
-          email: profile._json.email,
-          password: hashedPassword,
-          level: 'user'
-        }).then(user => {
+        profile._json.email ? (
+          User.create({
+            name: profile._json.name,
+            email: profile._json.email,
+            password: hashedPassword,
+            level: 'user',
+            img:  profile._json.avatar_url
+          })
+        ) : (
+          User.create({
+            name: profile._json.name,
+            email: 'Vincule_su_email_en_GitHub@laCoseria.com',
+            password: hashedPassword,
+            level: 'user',
+            img:  profile._json.avatar_url
+          })
+        )
+        .then(user => {
           console.log(user)
           Order.create({
             idUser: user.idUser,
@@ -199,6 +210,9 @@ function initialize(passport) {
   },
     authenticateUserGitHub
   ));
+
+
+
 
   passport.use(new LocalStrategy({
     usernameField: 'email',

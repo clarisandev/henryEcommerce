@@ -5,9 +5,7 @@ import MenuCrud from './components/MenuCrud/MenuCrud';
 import Home from './components/Home/Home';
 import Product from './components/product/products';
 import Categories from './components/Categories/Categories';
-import AdminNavBar from './components/AdminNavBar/AdminNavBar';
 import NotFound from './components/NotFound/NotFound';
-
 import './App.css'
 import Order from './components/Order/order';
 import NavBar from './components/NavBar/navBar';
@@ -22,6 +20,8 @@ import ResetPassword from './components/LogIn/ResetPassword'
 import NewPassword from './components/LogIn/NewPassword';
 import Users from './components/Users/Users';
 import PagoSuccess from './components/Order/pagesSucces/PagoSuccess';
+import UserOrders from './components/MyAccount/userOrders'
+import AboutUs from './components/AboutUs/AboutUs'
 
 function App() {
   return (
@@ -46,7 +46,8 @@ function App() {
             <Route path='/reviews' component={Reviews}/>
             <Route path='/forgot' component={ResetPassword} />
             <Route path='/pagoSuccess' component={PagoSuccess}/>
-            {/* <Route exact path='/admin' component={AdminNavBar}/> */}
+            <Route path='/myOrders' component={UserOrders}/>
+            <Route path='/aboutUs' component={AboutUs}/>
             <Route component={NotFound} />
           </Switch>
         </Router>

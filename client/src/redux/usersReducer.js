@@ -1,4 +1,5 @@
 import {
+    SET_MODAL_LOGIN,
     RESET_STATUS_RESET,
     RESET_OK,
     RESET_FAILED,
@@ -16,7 +17,10 @@ import {
     USER_TO_ADMIN,
     ADMIN_TO_USER,
     DELETE_USER,
-    GET_ALL_DIRECTIONS
+    GET_ALL_DIRECTIONS,
+    UPDATE_USER,
+    FILE_UPLOAD,
+    PUT_DATA
 } from './constants'
 
 const initialState = {
@@ -28,11 +32,24 @@ const initialState = {
     loggedOut: false,
     resetStatus: [],
     users: [],
-    direcciones: []
+    direcciones: [],
+    modalLogin: false,
+    img: ''
 }
 
 const usersReducer = (state = initialState, action) => {
     switch (action.type) {
+        case UPDATE_USER:
+            return {
+                ...state,
+                name: action.payload.name,
+                email: action.payload.email
+            }
+        case SET_MODAL_LOGIN:
+            return {
+                ...state,
+                modalLogin: action.payload
+            }
         case GET_ALL_USERS:
             return {
                 ...state,
@@ -101,7 +118,8 @@ const usersReducer = (state = initialState, action) => {
                 name: action.payload.name,
                 email: action.payload.email,
                 level: action.payload.level,
-                verified: action.payload.verified
+                verified: action.payload.verified,
+                img: action.payload.img
             };
 
         case SET_VERIFIED:
@@ -130,7 +148,17 @@ const usersReducer = (state = initialState, action) => {
                 ...state,
                 direcciones: action.payload
             }
-
+            case PUT_DATA:
+                return {
+                  ...state,
+                  email: action.payload.email,
+                  name: action.payload.name,
+                };
+          
+              case FILE_UPLOAD:
+                return {
+                  ...state,
+                };
         default:
             return state;
     }

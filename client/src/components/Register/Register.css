@@ -22,16 +22,36 @@
         sans-serif;
     font-weight: 300;
 }
+.input-icons i{ 
+    position: absolute; 
+} 
+  
+.input-icons { 
+    margin-bottom: 10px; 
+} 
+  
+.fa.fa-user.icon,
+.fa.fa-lock,
+.fa.fa-envelope { 
+    padding: 10px; 
+    min-width: 40px; 
+    color: gray;
+    
+} 
 
+.input-field { 
+    width: 100%; 
+    padding: 10px; 
+    text-align: center; 
+} 
 .FormRegisterContainer {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
 }
 
-.inputRegister {
+.input-field {
     margin-top: 5px;
-    border-radius: 11px;
     width: 100%;
     padding: 5px 65px;
     text-align: center;
@@ -42,21 +62,6 @@
     font-weight: 300;
     font-size: 13px;
     color: black;
-}
-
-.closeButton {
-    align-self: flex-end;
-    justify-self: flex-end;
-    margin-top: 5px;
-    margin-right: 5px;
-    margin-bottom: 0px;
-    margin-left: 0px;
-    background-color: darkred;
-    width: 25px;
-    border-radius: 10px;
-    text-align: center;
-    justify-content: center;
-    color: white
 }
 
 .LoginAccount {

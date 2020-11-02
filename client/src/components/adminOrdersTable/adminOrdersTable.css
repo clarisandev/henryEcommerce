@@ -4,7 +4,14 @@
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    color: white;
+}
+.contentContainer{
+    margin-top: 2vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 .NoOrders {
     display: flex;
@@ -21,4 +28,22 @@
     border-radius: 5px;
     background-color: rgba(74, 74, 74, 0.25);
     backdrop-filter: blur(7px);
+}
+
+.ordersCont {
+    margin-right: 15px;
+    padding-top: 10px;
+    width: 100%;
+    /* display: flex; */
+    align-self: center;
+}
+.ordersAccountCont{
+    margin-right: 15px;
+    padding-top: 10px;
+    width: 100%;
+    align-self: center;
+}
+.userAccountContainer{
+    display: flex;
+    align-content: center;
 }

@@ -6,7 +6,6 @@
     height: 500px;
     background-color: rgba(74, 74, 74, 0.25);
     backdrop-filter: blur(7px);
-    border-radius: 15px;
     font-family: 'Roboto', sans-serif;
     font-weight: 300;
 }
@@ -42,7 +41,26 @@
         margin: 0.4em auto;
     }
 }
+.input-icons i{ 
+    position: absolute; 
+} 
+  
+.input-icons { 
+    margin-bottom: 10px; 
+} 
+  
+.fa.fa-user.icon,
+.fa.fa-lock { 
+    padding: 10px; 
+    min-width: 40px; 
+    color: gray;
+} 
 
+.input-field { 
+    width: 100%; 
+    padding: 10px; 
+    text-align: center; 
+} 
 
 #loginHeaderContainer {
     font-family: 'Roboto', sans-serif;
@@ -76,10 +94,8 @@
     justify-content: space-around;
 }
 
-.standardInput {
+.input-field {
     margin-top: 5px;
-    border-radius: 11px;
-    width: 75%;
     padding: 5px 65px;
     text-align: center;
     border: 0px;
@@ -102,16 +118,12 @@
 .closeButton {
     align-self: flex-end;
     justify-self: flex-end;
-    margin-top: 5px;
-    margin-right: 5px;
+    margin-top: 10px;
+    margin-right: 10px;
     margin-bottom: 0px;
     margin-left: 0px;
-    background-color: darkred;
-    width: 25px;
-    border-radius: 10px;
-    text-align: center;
     justify-content: center;
-    color: white
+    color: white;
 }
 
 .LoginAccount {

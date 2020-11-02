@@ -62,15 +62,15 @@ export const actionSetProduct = (product) => {
 }
 export const actionDeleteProduct = (id) => {
     return (dispatch) => {
-        axios.delete(url + 'products/' + id, {withCredentials: true}).then(dispatch({ type: DELETE_PRODUCT })).catch(error => {
+        axios.delete(url + 'products/' + id, {withCredentials: true}).then((res) => dispatch({ type: DELETE_PRODUCT, payload: res.data })).catch(error => {
             dispatch({ type: PRODUCTS_ERROR, payload: error })
         })
     }
 }
 export const actionPostProduct = (product) => {
     return (dispatch) => {
-        axios.post(url + 'products/create', product, {withCredentials: true}).then(() => {
-            dispatch({ type: PRODUCT_POST })
+        axios.post(url + 'products/create', product, {withCredentials: true}).then((res) => {
+            dispatch({ type: PRODUCT_POST, payload: res.data })
         })
     }
 }
